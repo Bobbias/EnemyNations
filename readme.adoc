@@ -37,11 +37,18 @@ tools/smartheap:: A copy of the smartheap library the game uses. This copy was t
 tools/vdmplay:: A networking library that appears to be mostly in-house, although it makes use of both the Novell SDK
 and a library by Rogue Wave.
 tools/wing:: https://en.wikipedia.org/wiki/Enemy_Nations[WinG], the graphics library which predates DirectX and provided
-high performance graphics to early windows systems.
+high performance graphics to early Windows systems.
 
 == Project Goals and Status
 
 The ultimate goal of the project is to modernize the source code, and remove all outdated elements. This means removing
 things like IPX networking, the CD requirement, and much more.
 
-Currently I am working on getting everything to compile with relatively minimal changes.
+Currently, I am working on getting everything to compile with relatively minimal changes.
+
+== Known issues
+
+* There are many duplicate files throughout this repo.
+* ccache location is hardcoded in CMakeLists.txt
+* There are a ton of horrible hacks to try to get things to compile.
+* Only works on windows.
