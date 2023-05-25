@@ -1,19 +1,21 @@
 #include "stdafx.h"
 
 #include "astring.h"
-#include "astrlist.h"
+//#include "astrlist.h"
 #include "commport.h"
 #include "datalog.h"
 #include "dialer.h"
 #include "mdmdrvr.h"
 #include "resource.h"
 
+#include <vector>
+
 #define LENGTH(x) sizeof(x)/sizeof(x[0])
 
 #define CARRIER_TIMEOUT 10000L
 
 
-Dialer::Dialer(CCommPort *p, const AStrList &strings) :
+Dialer::Dialer(CCommPort *p, const std::vector<AString> &strings) :
         state(IDLE),
         ModemDriver(p, strings),
         callBack(NULL), cbData(NULL) {

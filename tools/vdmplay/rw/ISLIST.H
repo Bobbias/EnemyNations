@@ -96,10 +96,10 @@
 
 
 #ifndef __RWTOOLDEFS_H__
-# include "rw/tooldefs.h"
+# include "tooldefs.h"
 #endif
 #ifndef __RWMEMPOOL_H__
-# include "rw/mempool.h"
+# include "mempool.h"
 #endif
 
 
@@ -109,7 +109,7 @@
  *								*
  ****************************************************************/
 
-class RWExport RWIsvSlink RWMemoryPool_OPTION
+class RWIsvSlink RWMemoryPool_OPTION
 {
 
 public:
@@ -134,7 +134,7 @@ public:
  *								*
  ****************************************************************/
 
-class RWExport RWIsvSlist
+class RWIsvSlist
 {
 
 public:

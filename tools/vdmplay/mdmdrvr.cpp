@@ -1,7 +1,7 @@
+#include <vector>
 #include "stdafx.h"
 
 #include "astring.h"
-#include "astrlist.h"
 #include "commport.h"
 #include "datalog.h"
 #include "mdmdrvr.h"
@@ -28,7 +28,7 @@ ModemDriver::ModemDriver(CCommPort *p) : port(p),
 }
 
 
-ModemDriver::ModemDriver(CCommPort *p, const AStrList &modemProg) : port(p),
+ModemDriver::ModemDriver(CCommPort *p, const std::vector<AString> &modemProg) : port(p),
                                                                     prog(modemProg), progPhase(0),
                                                                     responses(responseTable),
                                                                     responseCount(LENGTH(responseTable)),
@@ -106,7 +106,7 @@ void ModemDriver::commEvent() {
             break;
         default:  // Note: unnecesary
             result = false;
-            progPhase = prog.entries();
+            progPhase = prog.size();
             notifyClient();
             break;
     }
@@ -121,7 +121,7 @@ void ModemDriver::timerEvent() {
 
 void ModemDriver::timeout() {
     result = FALSE;
-    progPhase = prog.entries();
+    progPhase = prog.size();
     notifyClient();
 }
 
@@ -166,5 +166,9 @@ void ModemDriver::sendToPort(const char *p, int s) {
     }
 
 
+}
+
+void ModemDriver::setProgram(const std::vector<AString> &modemProgram) {
+    prog = std::move(modemProgram);
 }
 

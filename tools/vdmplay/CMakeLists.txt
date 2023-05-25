@@ -56,7 +56,7 @@ target_link_directories(vdmplay PUBLIC
         ./)
 
 target_link_libraries(vdmplay PUBLIC
-        mtlgmt
+#        mtlgmt
         netapi32
         winmm
         ucrt
@@ -64,7 +64,7 @@ target_link_libraries(vdmplay PUBLIC
         mfcs140
         msvcprt
         msvcrt
-        mtlmt
+#        mtlmt
         legacy_stdio_definitions
 )
 
@@ -76,8 +76,9 @@ target_compile_options(vdmplay INTERFACE
         )
 
 target_link_options(vdmplay PUBLIC
+        /NODEFAULTLIB:libcmt
         /NODEFAULTLIB:LIBCMTD
-#        "$<$<CONFIG:DEBUG>/NODEFAULTLIB:LIBCMTD>"
+        /NODEFAULTLIB:mtlgmt
         )
 
 ###############################

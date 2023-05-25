@@ -2,6 +2,8 @@
 #define __COMMNET_H__
 
 #include "stdafx.h"
+#include "vpnet.h"
+
 
 class CCommAddress : public CNetAddress {
 public:

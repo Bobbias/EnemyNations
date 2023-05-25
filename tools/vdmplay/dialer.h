@@ -20,7 +20,7 @@ public:
 
     };
 
-    Dialer(CCommPort *p, const AStrList &initList);
+    Dialer(CCommPort *p, const std::vector<AString> &initList);
 
     virtual ~Dialer();
 

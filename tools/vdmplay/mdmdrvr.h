@@ -2,6 +2,7 @@
 #ifndef __MDMDRVR_H__
 #define __MDMDRVR_H__
 
+#include <vector>
 
 class CCommPort;
 
@@ -27,20 +28,20 @@ public:
 
     ModemDriver(CCommPort *p);
 
-    ModemDriver(CCommPort *p, const AStrList &modemProgram);
+    ModemDriver(CCommPort *p, const std::vector<AString> &modemProgram);
 
     virtual ~ModemDriver();
 
     void setLogger(CDataLogger *l) { logger = l; }
 
-    void setProgram(const AStrList &modemProgram);
+    void setProgram(const std::vector<AString> &modemProgram);
 
     void setResponses(const ModemResponse *r, int count) {
         responses = r;
         responseCount = count;
     }
 
-    bool done() const { return progPhase >= (int) prog.entries(); }
+    bool done() const { return progPhase >= (int) prog.size(); }
 
     bool stillWaiting() const { return waiting; }
 
@@ -88,7 +89,7 @@ protected:
 
 
     CCommPort *port;
-    AStrList prog;
+    std::vector<AString> prog;
     int progPhase;
     AString incomingData;
     bool waiting;

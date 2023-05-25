@@ -427,7 +427,7 @@ public:
   size_t	last(char c) const		{return pref()->last(c);}
   size_t  	length() const			{return pref()->nchars_;}
 #ifndef RW_NO_LOCALE
-  size_t	mbLength() const;	// multibyte length, or RW_NPOS on error
+//  size_t	mbLength() const;	// multibyte length, or RW_NPOS on error
 #endif
   RWCString&	prepend(const char*);			// Prepend a character string
   RWCString&	prepend(const char* cs, size_t N);

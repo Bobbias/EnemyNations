@@ -998,20 +998,20 @@ strXForm(const RWCString &cstr) {
     return temp;
 }
 
-size_t
-RWCString::mbLength() const {
-    const char *cp = data();
-    size_t i = 0;
-    size_t len = 0;
-    mblen((const char *) 0, MB_CUR_MAX);  // clear static state (bleah!)
-    while (i < length() && cp[i]) {
-        int l = mblen(cp + i, MB_CUR_MAX);
-        if (l <= 0) return RW_NPOS;
-        i += l;
-        ++len;
-    }
-    if (i > length()) return RW_NPOS; // incomplete last char
-    return len;
-}
+//size_t
+//RWCString::mbLength() const {
+//    const char *cp = data();
+//    size_t i = 0;
+//    size_t len = 0;
+//    mblen((const char *) 0, MB_CUR_MAX);  // clear static state (bleah!)
+//    while (i < length() && cp[i]) {
+//        int l = mblen(cp + i, MB_CUR_MAX);
+//        if (l <= 0) return RW_NPOS;
+//        i += l;
+//        ++len;
+//    }
+//    if (i > length()) return RW_NPOS; // incomplete last char
+//    return len;
+//}
 
 #endif

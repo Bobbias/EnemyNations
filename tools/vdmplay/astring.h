@@ -1,18 +1,18 @@
 #ifndef __ASTRING_H__
 #define __ASTRING_H__
 
-#ifndef USE_MFC
+#include "rw\DEFS.H"
 
-#include "rw/cstring.h"
-
-#endif
-
+#include <string>
+#include <cstdint>
 #include <stdlib.h>
-#include <string.h>
 
-//#ifndef bool
-//#define bool int
-//#endif
+// Amount to shift hash values to avoid clustering
+const size_t RW_HASH_SHIFT = 5;
+
+inline static void mash(unsigned &hash, unsigned chars) {
+    hash = (chars ^ ((hash << RW_HASH_SHIFT) | (hash >> (RWBITSPERBYTE * sizeof(uint32_t) - RW_HASH_SHIFT))));
+}
 
 class AString {
 public:
@@ -24,14 +24,11 @@ public:
             cutFrom(index);
     }
 
-
-#ifndef USE_MFC
-
     void cutFrom(int index) {
-        str = str(index, str.length() - index);
+        str = str.substr(index, str.length() - index);
     }
 
-    int find(const char *pat) { return str.index(pat); }
+    int find(const char *pat) { return str.find(pat); }
 
     bool operator==(const AString &a) const {
         return str.length() ? str == a.str : a.str.length() == 0;
@@ -67,7 +64,7 @@ public:
         return *this;
     }
 
-    AString &append(const RWCString &s) {
+    AString &append(const std::string &s) {
         str.append(s);
         return *this;
     }
@@ -80,7 +77,26 @@ public:
 
     int empty() const { return str.length() == 0; }
 
-    unsigned hash() const { return str.hash(); }
+    /// A custom, case sensitive hash function. Taken from Rogue Wave's cstring implementation
+    unsigned hash() const {
+        // Taken
+        unsigned int hv = (unsigned) length(); // Mix in the string length.
+        unsigned i = length() * sizeof(char) / sizeof(unsigned);
+        const unsigned *p = (const unsigned int *) str.data();
+        {
+            while (i--)
+                mash(hv, *p++);   // XOR in the characters.
+        }
+        // XOR in any remaining characters:
+        if ((i = length() * sizeof(char) % sizeof(unsigned)) != 0) {
+            unsigned h = 0;
+            const char *c = (const char *) p;
+            while (i--)
+                h = ((h << RWBITSPERBYTE * sizeof(char)) | *c++);
+            mash(hv, h);
+        }
+        return hv;
+    }
 
     unsigned length() const { return str.length(); }
 
@@ -99,50 +115,46 @@ public:
 
     AString() {}
 
-    AString(unsigned len) : str(' ', len) {}
+    /// Constructs an AString of a given length, filling it with ' ' (space) characters.
+    AString(unsigned int len) : str(' ', len) {}
 
     AString(const AString &s) : str(s.str) {}
 
-    operator const char *() const { return (const char *) str; }
+    operator const char *() const { return str.data(); }
 
     void *data() { return (void *) str.data(); }
 
-    void resize(unsigned l) { str.resize(l); }
+    void resize(size_t l) { str.resize(l); }
 
-    unsigned char at(unsigned i) const { return str[i]; }
+    unsigned char at(size_t i) const { return str[i]; }
 
-    unsigned char operator[](int i) const {
-        return (unsigned char) str[(unsigned) i];
+    unsigned char operator[](size_t i) const {
+        return (unsigned char)str[i];
     }
 
-    unsigned char operator[](unsigned i) const {
-        return (unsigned char) str[i];
-    }
-
-    unsigned findChar(char ch, unsigned start = 0) const {
-        return str.index(&ch, 1, start, str.exact);
+    size_t findChar(char ch, unsigned start = 0) const {
+        return str.find(&ch, start);
     }
 
 
 protected:
-    RWCString str;
-#endif
+    std::string str;
 };
 
 
-#ifdef __SC__
-inline char* operator=(char* b, const AString& s) 
-{
- s.copyTo(b);
- return b;
-}
-
-inline unsigned char* operator=(unsigned char* b, const AString& s) 
-{
- s.copyTo(b);
- return b;
-}
-
-#endif
+//#ifdef __SC__
+//inline char* operator=(char* b, const AString& s)
+//{
+// s.copyTo(b);
+// return b;
+//}
+//
+//inline unsigned char* operator=(unsigned char* b, const AString& s)
+//{
+// s.copyTo(b);
+// return b;
+//}
+//
+//#endif
 
 #endif /* */

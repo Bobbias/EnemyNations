@@ -3,6 +3,7 @@
 
 #include "vputil.h"
 #include "stdafx.h"
+#include "vplist.h"
 
 class CDataLogger;
 
