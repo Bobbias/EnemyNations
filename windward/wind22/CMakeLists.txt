@@ -50,7 +50,9 @@ target_compile_definitions(wind22 PUBLIC
         )
 
 target_link_libraries(wind22 PUBLIC
-        winmm.lib)
+        winmm.lib
+        version.lib
+        )
 
 target_include_directories(wind22 PUBLIC
         include
