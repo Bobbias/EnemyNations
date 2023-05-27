@@ -14,6 +14,7 @@
 #include "racedata.h"
 #include "research.h"
 #include "vpxfer.h"
+#include "mem_pool.h"
 
 class CNetCmd;
 class CUnit;
@@ -28,7 +29,9 @@ const int RELATIONS_PEACE    = 1;
 const int RELATIONS_NEUTRAL  = 2;
 const int RELATIONS_WAR      = 3;
 
-const int MSG_POOL_SIZE = ( sizeof( CMsgBldgStat ) + 3 ) & ~3;
+// Moved to mem_pool.h
+//const int MSG_POOL_SIZE = ( sizeof( CMsgBldgStat ) + 3 ) & ~3;
+
 
 typedef struct tagAI_INIT
 {
@@ -811,8 +814,8 @@ class CGame : public CObject
 
 
     CPtrList m_lstMsgs;  // posted messages
-    MEM_POOL m_memPoolLarge;
-    MEM_POOL m_memPoolSmall;
+    mempool_large m_memPoolLarge;
+    mempool_small m_memPoolSmall;
 
     CString m_sFileName;    // file name of the game (if loaded or saved)
     DWORD   m_dwFinalRand;  // final seed at end of init

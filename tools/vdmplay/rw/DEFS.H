@@ -377,11 +377,11 @@ private:
 enum RWUninitialized { rwUninitialized };
 enum RWSeverity {RWWARNING, RWDEFAULT, RWFATAL};
 
-const RWErrNo  RWSUCCESS        = 0;
-const size_t RWDEFAULT_CAPACITY = 64; /* Default collection class capacity */
-const size_t RWDEFAULT_RESIZE   = 64; /* Default collection class resize */
-const size_t RWBITSPERBYTE      = 8;  /* Number of bits per byte */
-const size_t RW_NPOS            = ~(size_t)0;
+constexpr RWErrNo  RWSUCCESS        = 0;
+constexpr size_t RWDEFAULT_CAPACITY = 64; /* Default collection class capacity */
+constexpr size_t RWDEFAULT_RESIZE   = 64; /* Default collection class resize */
+constexpr size_t RWBITSPERBYTE      = 8;  /* Number of bits per byte */
+constexpr size_t RW_NPOS            = ~(size_t)0;
 
 inline double        rwmax(double        a, double        b) {return a>b? a : b;}
 inline double        rwmin(double        a, double        b) {return a<b? a : b;}

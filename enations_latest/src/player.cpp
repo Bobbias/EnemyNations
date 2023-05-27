@@ -9,6 +9,7 @@
 // player.cpp
 //
 
+#include <algorithm> // for the memory pool
 #include "player.h"
 
 #include "ai.h"
@@ -475,8 +476,8 @@ void CPlayer::Research( int iNumSec )
         ResearchDiscovered( iTmp );
         CString sMsg;
         sMsg.LoadString( IDS_EVENT_RSRCH_DONE );
-        CRsrchItem* pRi = &theRsrch.ElementAt( iTmp );
-        csPrintf( &sMsg, pRi->m_sName );
+        pRi = &theRsrch.ElementAt( iTmp );
+        csPrintf( &sMsg, &(pRi->m_sName) );
         theApp.m_wndBar.SetStatusText( 0, sMsg, CStatInst::status );
         theGame.MulEvent( MEVENT_RSRCH_DONE, NULL );
         CWndComm::UpdateMail( );
@@ -902,6 +903,10 @@ void CPlayer::Serialize( CArchive& ar )
     }
 }
 
+BOOL CPlayer::BuildCcBldg(int iBldg) {
+    return 1;
+}
+
 #ifdef _DEBUG
 void CPlayer::AssertValid( ) const
 {
@@ -926,8 +931,24 @@ void CGame::_ctor( )
     m_bIsNetGame = FALSE;
     ctor( );
 
-    m_memPoolLarge = MemPoolInitFS( VP_MAXSENDDATA, 10, MEM_POOL_SERIALIZE );
-    m_memPoolSmall = MemPoolInitFS( MSG_POOL_SIZE, 100, MEM_POOL_SERIALIZE );
+    // block size, block count, flags
+    m_memPoolLarge = mempool_large( ); // MEM_POOL_SERIALIZE flag used indicates this needs to be usable multithreaded.
+    m_memPoolSmall = mempool_small( );
+
+    // MemPoolInitFS creates a new memory pool from which fixed-size memory blocks are to be allocated. You must create
+    // a memory pool before allocating fixed-size memory blocks.
+    //
+    // The blockSize parameter specifies the size of fixed-size memory blocks to be allocated from this pool. You can’t
+    // change the block size after the first allocation. SmartHeap may round the block size up for alignment — use
+    // MemPoolInfo or MemSizePtr to determine the actual block size.
+    //
+    // The blockCount parameter specifies the initial number of blocks to allocate in the memory pool — the pool will
+    // grow beyond this if necessary to satisfy allocation requests.
+    //
+    // See MemPoolInit for details on the flags parameter.
+    //
+    // MemPoolInitFS is equivalent to calling the combination of MemPoolInit, MemPoolSetBlockSizeFS, and
+    // MemPoolPreAllocate.
 }
 
 void CGame::ctor( )

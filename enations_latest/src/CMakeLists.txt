@@ -1,7 +1,8 @@
+message("Current CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 
 set(enations_sources
-        advanced.cpp
-        advdlg.cpp
+#        advanced.cpp
+#        advdlg.cpp
         ai.cpp
         area.cpp
         bmbutton.cpp
@@ -36,7 +37,7 @@ set(enations_sources
         creatsin.cpp
         credits.cpp
         cutscene.cpp
-        dlgflic.cpp
+#        dlgflic.cpp
         DlgMsg.cpp
         DlgReg.cpp
         dxfer.cpp
@@ -85,16 +86,16 @@ set(enations_sources
         vehoppo.cpp
         vpxfer.cpp
         world.cpp
-        wrldinit.cpp)
+        wrldinit.cpp mem_pool.h)
 
 
 set(CMAKE_GENERATOR_TOOLSET "host=x86")
 
-add_executable(enations ${enations_sources})
+add_executable(enations WIN32 ${enations_sources})
 
 target_compile_options(enations INTERFACE
-        "$<$<CONFIG:RELEASE>:$<BUILD_INTERFACE:/MD;/GX;/Zi;/O2;/Ob2>"
-        "$<$<CONFIG:DEBUG>:$<BUILD_INTERFACE:/MD;/GX>"
+        "$<$<CONFIG:RELEASE>:$<BUILD_INTERFACE:/MD;/EHsc;/Zi;/O2;/Ob2>"
+        "$<$<CONFIG:DEBUG>:$<BUILD_INTERFACE:/MD;/EHsc>"
         )
 
 message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
@@ -121,17 +122,29 @@ target_link_libraries(enations PUBLIC
         ddraw.lib
         mss32.lib
         wing32.lib
-        shlw32m.lib
+#        msvcrt.lib
+#        shdw32m.lib
+#        shlw32m.lib
         wind22.lib
         vdmplay.lib
         winmm.lib
         vfw32.lib
-        shmfc4m.lib)
+#        shmfc4m.lib
+        Netapi32.lib
+        version.lib
+        )
+
+target_link_options(enations PUBLIC
+        /NODEFAULTLIB:nafxcw.lib
+        /NODEFAULTLIB:libcmt.lib
+        )
 
 target_link_directories(enations PUBLIC
         .
         ../../tools/lib
-        ../../cmake-build-release/windward/wind22)
+        ../../cmake-build-release/tools/vdmplay
+        ../../cmake-build-release/windward/wind22
+        )
 
 
 set_property(TARGET enations PROPERTY CXX_STANDARD 11)

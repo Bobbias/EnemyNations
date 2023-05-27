@@ -37,7 +37,9 @@
 #include "vdmplay.h"
 #include "windward.h"
 
-#include <smartheap/smrtheap.hpp>
+// Smartheap's lib was compiled against a very out of date c runtime. There's no need for optimizing allocation
+// at this level anymore, given the speed of modern computers and the relatively low load this game presents.
+//#include <smartheap/smrtheap.hpp>
 
 #pragma warning( disable : 4244 )  // I don't like this!!!
 

@@ -664,9 +664,9 @@ void CGame::AddToQueue( CNetCmd const* pCmd, int iLen )
     void* pBuf;
     TRAP( iLen > VP_MAXSENDDATA );
     if ( iLen <= MSG_POOL_SIZE )
-        pBuf = MemAllocFS( m_memPoolSmall );
+        pBuf = m_memPoolSmall.alloc();
     else
-        pBuf = MemAllocFS( m_memPoolLarge );
+        pBuf = m_memPoolLarge.alloc();
     memcpy( pBuf, pCmd, iLen );
 
     if ( iLen <= MSG_POOL_SIZE )
@@ -707,8 +707,8 @@ void CGame::EmptyQueue( )
 
     while ( theGame.m_lstMsgs.GetCount( ) > 0 ) FreeQueueElem( (CNetCmd*)theGame.m_lstMsgs.RemoveHead( ) );
 
-    MemPoolShrink( m_memPoolLarge );
-    MemPoolShrink( m_memPoolSmall );
+//    MemPoolShrink( m_memPoolLarge );
+//    MemPoolShrink( m_memPoolSmall );
 
     LeaveCriticalSection( &cs );
 }

@@ -27,8 +27,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 #define new DEBUG_NEW
 
-MEM_POOL _memPoolCompSprites = NULL;
-MEM_POOL _memPoolSprites = NULL;
+//MEM_POOL _memPoolCompSprites = NULL;
+//MEM_POOL _memPoolSprites = NULL;
 
 int **CVehicle::m_apiWid = NULL;
 int CVehicle::m_iMaxRange = 0;
@@ -1404,7 +1404,7 @@ CSpriteParms::CSpriteParms(
     long lHdrLen = pmmio->ReadLong();
 
 //BUGBUG	m_ptrspritehdr = ( CSpriteHdr * )( new BYTE [ lHdrLen ] );
-    m_ptrspritehdr = (CSpriteHdr *) MemAllocPtr(_memPoolCompSprites, lHdrLen, 0);
+    m_ptrspritehdr = new CSpriteHdr();
     if (m_ptrspritehdr.Value() == NULL) {
         AfxMessageBox(IDS_NO_MEMORY, MB_OK);
         ThrowError(ERR_OUT_OF_MEMORY);
@@ -1426,7 +1426,7 @@ CSpriteParms::CSpriteParms(
     // theApp.BaseYield ();
 
 //BUGBUG	m_ptrbyCompressedSuperviews = new BYTE [ lLength ];
-    m_ptrbyCompressedSuperviews = (BYTE *) MemAllocPtr(_memPoolCompSprites, lLength, 0);
+    m_ptrbyCompressedSuperviews = new BYTE[lLength];
     if (m_ptrbyCompressedSuperviews.Value() == NULL) {
         AfxMessageBox(IDS_NO_MEMORY, MB_OK);
         ThrowError(ERR_OUT_OF_MEMORY);
@@ -1558,9 +1558,9 @@ CSprite::CSprite(
 //   SimplePtr< BYTE > ptrbyDecompressedSuperviews = new BYTE [ iDecompressedTotalLength ];
     SimplePtr<BYTE> ptrbyDecompressedSuperviews;
     if (1 == m_iBytesPerPixel || 3 == m_iBytesPerPixel)
-        ptrbyDecompressedSuperviews = (BYTE *) MemAllocPtr(_memPoolSprites, iDecompressedTotalLength, 0);
+        ptrbyDecompressedSuperviews = new BYTE[iDecompressedTotalLength];
     else
-        ptrbyDecompressedSuperviews = (BYTE *) MemAllocPtr(_memPoolCompSprites, iDecompressedTotalLength, 0);
+        ptrbyDecompressedSuperviews = new BYTE[iDecompressedTotalLength];
 
     BYTE *pbyCompressedSuperview = ptrbyCompressedSuperviews.Value();
     BYTE *pbyDecompressedSuperview = ptrbyDecompressedSuperviews.Value();
@@ -1595,7 +1595,7 @@ CSprite::CSprite(
                         m_iBytesPerPixel - 1];
 
 //BUGBUG      m_ptrbyDecompressedSuperviews = new BYTE [ iDecompressedLength ];
-        m_ptrbyDecompressedSuperviews = (BYTE *) MemAllocPtr(_memPoolSprites, iDecompressedLength, 0);
+        m_ptrbyDecompressedSuperviews = new BYTE[iDecompressedLength];
 
         BYTE *pbyDst = m_ptrbyDecompressedSuperviews.Value();
         BYTE *pbySrc = ptrbyDecompressedSuperviews.Value();
@@ -2147,10 +2147,10 @@ CSpriteCollection::Read(
     theApp.BaseYield();
 
     // make sure the pools are set up
-    if (_memPoolCompSprites == NULL)
-        _memPoolCompSprites = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
-    if (_memPoolSprites == NULL)
-        _memPoolSprites = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
+//    if (_memPoolCompSprites == NULL)
+//        _memPoolCompSprites = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
+//    if (_memPoolSprites == NULL)
+//        _memPoolSprites = MemPoolInit(MEM_POOL_DEFAULT | MEM_POOL_SERIALIZE);
 
     ASSERT(8 == iBitsPerPixel ||
            15 == iBitsPerPixel ||
@@ -2337,7 +2337,7 @@ CSpriteCollection::Read(
 
     theApp.BaseYield();
 
-    MemPoolShrink(_memPoolCompSprites);
+//    MemPoolShrink(_memPoolCompSprites);
 
     return FALSE;
 }

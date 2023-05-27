@@ -15,7 +15,7 @@
 #include "icons.h"
 #include "sprite.h"
 
-#include <smartheap/smrtheap.h>
+#include "mem_pool.h"
 
 class CStatInst;
 class CWndUnitStat;
@@ -812,7 +812,7 @@ class CProjBase : public CEffectTile
     // GG						enum { projectile, explosion };
     Fixed m_fixAlt;
 
-    static MEM_POOL m_memPool;
+    static memory_pool<mempool_std_heap<188, 64>> m_memPool; // FIXME: should be PROJ_BASE_ALLOC_SIZE not hardcoded!
 
     // for linked list in CProjMap
     CProjBase* m_pNext;
@@ -853,7 +853,7 @@ class CExplosion : public CProjBase
     int m_iKillFrame;  // on or after this frame kill the building
 };
 
-const int PROJ_BASE_ALLOC_SIZE = __max( sizeof( CProjectile ), sizeof( CExplosion ) );
+const int PROJ_BASE_ALLOC_SIZE = __max(sizeof(CProjectile), sizeof(CExplosion));
 
 // we map based on CHex
 class CProjMap : public CMap<DWORD, DWORD, CProjBase*, CProjBase*>

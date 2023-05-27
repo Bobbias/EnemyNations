@@ -28,6 +28,7 @@ class CMsgRoadNew;
 class CMsgBridgeNew;
 class CMsgVehCompLocElem;
 class CPlayer;
+class CMsgVehLoc;
 
 
 #ifdef _DEBUG
@@ -1490,5 +1491,7 @@ class CNetSaveInfo : public CNetCmd
 
 
 #pragma pack( pop, cnetcmd )
+
+const int MSG_POOL_SIZE = (sizeof(CMsgBldgStat) + 3) & ~3;
 
 #endif

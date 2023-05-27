@@ -384,8 +384,8 @@ BOOL CConquerApp::InitInstance( )
 {
 
 #ifdef USE_SMARTHEAP
-    MemRegisterTask( );
-    MemSetErrorHandler( NULL );
+//    MemRegisterTask( );
+//    MemSetErrorHandler( NULL );
 #endif
 
     InitWindwardLib1( this );
@@ -1811,7 +1811,7 @@ int CConquerApp::ExitInstance( )
     CloseHandle( hRenderEvent );
 
 #ifdef USE_SMARTHEAP
-    MemUnregisterTask( );
+//    MemUnregisterTask( );
 #endif
 
     if ( m_hLibLang != NULL )

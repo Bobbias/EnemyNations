@@ -53,3 +53,7 @@ void CDirtyRects::AddRect( CRect const* prect, CDirtyRects::RECT_LIST eList ) {
 
 void CDirtyRects::AddRect( CRect const* prect, CRect arect[], int& unk ) {
 }
+
+CDirtyRects::~CDirtyRects() {
+
+}
