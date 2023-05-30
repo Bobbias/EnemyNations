@@ -2,7 +2,7 @@
 // Version stamp for this .EXE
 
 #include "version.h"
-#include <ver.h>
+//#include <version.h>
 
 VS_VERSION_INFO     VERSIONINFO
   FILEVERSION       VER_MAJOR, VER_MINOR, VER_RELEASE, 0

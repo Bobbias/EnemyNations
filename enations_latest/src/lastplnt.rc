@@ -66,7 +66,7 @@ BEGIN
     LTEXT           "unknown",IDC_VER_NET,7,35,264,8
     LTEXT           "unknown",IDC_VER_THUNK,7,105,200,8
     LTEXT           "unknown",IDC_VER_RIF,7,49,264,8
-    LTEXT           "© 1995 - 1997 Windward Studios, Inc.  All Rights Reserved.",
+    LTEXT           "ï¿½ 1995 - 1997 Windward Studios, Inc.  All Rights Reserved.",
                     IDC_STATIC,7,148,192,8
     LTEXT           "unknown",IDC_VER_VIDEO,7,63,264,8
     LTEXT           "unknown",IDC_VER_SOUND,7,77,264,8
@@ -1376,7 +1376,7 @@ BEGIN
     IDS_VPJOIN_FAILED       "The network layer could not connect to the requested game.\nThe game may have already started."
     IDS_VPSEND_FAILED       "The network layer could not talk to one of the other player's computers.\nYou may want to try to reconnect."
     IDS_MSG_JOIN_FAILED     "You cannot join game%1.\nThe network returned error %2."
-    IDS_COPYRIGHT           "© 1995 - 1997 Windward Studios, Inc.  All Rights Reserved."
+    IDS_COPYRIGHT           "ï¿½ 1995 - 1997 Windward Studios, Inc.  All Rights Reserved."
     IDS_AI_PLAYER           "Computer Player %1"
     IDS_PREV                "<< &Prev"
 END
@@ -1721,7 +1721,7 @@ END
 #include "res\version.rc"  // non-App Studio edited resources
 
 #include "afxres.rc"  	// Standard components
-#include "windward.rc"
+//#include "windward.rc"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

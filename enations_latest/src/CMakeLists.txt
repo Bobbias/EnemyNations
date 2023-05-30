@@ -51,6 +51,7 @@ set(enations_sources
         ipcsend.cpp
         join.cpp
         lastplnt.cpp
+        lastplnt.rc
         license.cpp
         loadtruk.cpp
         main.cpp
@@ -94,7 +95,7 @@ set(CMAKE_GENERATOR_TOOLSET "host=x86")
 add_executable(enations WIN32 ${enations_sources})
 
 target_compile_options(enations INTERFACE
-        "$<$<CONFIG:RELEASE>:$<BUILD_INTERFACE:/MD;/EHsc;/Zi;/O2;/Ob2>"
+        "$<$<CONFIG:RELEASE>:$<BUILD_INTERFACE:/MD;/EHsc;/Zi;/O2;/Ob2;/DEBUG>"
         "$<$<CONFIG:DEBUG>:$<BUILD_INTERFACE:/MD;/EHsc>"
         )
 
@@ -137,6 +138,9 @@ target_link_libraries(enations PUBLIC
 target_link_options(enations PUBLIC
         /NODEFAULTLIB:nafxcw.lib
         /NODEFAULTLIB:libcmt.lib
+        /DEBUG
+        /OPT:REF
+        /OPT:ICF
         )
 
 target_link_directories(enations PUBLIC
