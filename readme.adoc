@@ -23,17 +23,16 @@ The game was released as freeware in October 2005, and the game and source code 
 
 The source code structure currently looks like this:
 
-compress:: Source for a compression tool.
 enations:: Source code from one source.
 enations_latest:: mostly the same, but seems to be missing some parts.
-makeriff:: A tool for assembling the final .dat file from the various components.
-sprite:: A tool for working with the game's sprites.
 src/cdf:: Another tool for building the final .dat file.
 src/makeriff:: Duplication? of the makeriff source.
+tools/compress:: Source for a compression tool.
 tools/lib:: Holds a bunch of lib files potentially necessary for building the final game and tooling.
+tools/makeriff:: A tool for assembling the final .dat file from the various components.
 tools/mss:: Headers and libs for the version of the https://en.wikipedia.org/wiki/Miles_Sound_System[Miles Sound System]
+tools/sprite:: A tool for working with the game's sprites.
 the game uses.
-tools/smartheap:: A copy of the smartheap library the game uses. This copy was taken from the https://github.com/jedis/jediacademy[Jedi Academy source], and looks to be compatible.
 tools/vdmplay:: A networking library that appears to be mostly in-house, although it makes use of both the Novell SDK
 and a library by Rogue Wave.
 tools/wing:: https://en.wikipedia.org/wiki/Enemy_Nations[WinG], the graphics library which predates DirectX and provided
