@@ -105,11 +105,11 @@ inline void TRAP (bool f=true)
 }
 #else
 
-#pragma clang diagnostic push
+//#pragma clang diagnostic push
 // ignore Unused Parameter warning here
-#pragma ide diagnostic ignored "UnusedParameter"
+//#pragma ide diagnostic ignored "UnusedParameter"
 inline void TRAP (bool f = true) { }
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
 
 #endif
 #pragma warning (default : 4100 )
