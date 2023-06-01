@@ -166,7 +166,7 @@ void CRiffFile::Parse(CString inFile, CString outFile) {
     }
 
     pOutFile = new CStdioFile;
-    if (pOutFile == NULL)
+    if (pOutFile == nullptr)
         ReportError("allocating memory");
 
     if (pOutFile->Open(outFile, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive | CFile::typeBinary) ==
