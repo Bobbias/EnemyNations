@@ -648,8 +648,9 @@ void CMusicPlayer::Open( int iMusicVol, int iSoundVol, MUSIC_MODE iMode, int iGr
         m_bExclWav = iMode != CMusicPlayer::MUSIC_MODE::midi_only;
 
         // open the MIDI device
-        if ( ( iMode == CMusicPlayer::MUSIC_MODE::midi_only ) && ( m_iMusicVol > 0 ) )
-            OpenMidi( m_iMusicVol );
+        if ( ( iMode == CMusicPlayer::MUSIC_MODE::midi_only ) && ( m_iMusicVol > 0 ) ) {
+            OpenMidi(m_iMusicVol);
+        }
 
         // open the wave device
         int iVol;
@@ -657,8 +658,9 @@ void CMusicPlayer::Open( int iMusicVol, int iSoundVol, MUSIC_MODE iMode, int iGr
             iVol = m_iSfxVol;
         else
             iVol = __max( m_iMusicVol, m_iSfxVol );
-        if ( iVol > 0 )
-            OpenDigital( iVol, !m_bExclWav );
+        if ( iVol > 0 ) {
+            OpenDigital(iVol, !m_bExclWav);
+        }
 
         AIL_serve();
     }
