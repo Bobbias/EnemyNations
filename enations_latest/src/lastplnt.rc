@@ -1721,7 +1721,7 @@ END
 #include "res\version.rc"  // non-App Studio edited resources
 
 #include "afxres.rc"  	// Standard components
-//#include "windward.rc"
+#include "windward.rc"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 
