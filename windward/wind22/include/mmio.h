@@ -119,7 +119,7 @@ class CMmioEmbeddedFile : public CMmio
     public :
 
     CMmioEmbeddedFile();
-    CMmioEmbeddedFile( HANDLE hFile, const char * pFileName );
+    CMmioEmbeddedFile( HANDLE hFile, const char * pFileName, unsigned long long offset);
     virtual ~CMmioEmbeddedFile();
 
     virtual void Open( HANDLE hFile, const char * pFileName );

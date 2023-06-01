@@ -146,9 +146,10 @@ CMmioEmbeddedFile::CMmioEmbeddedFile() {
     ctor();
 }
 
-CMmioEmbeddedFile::CMmioEmbeddedFile( HANDLE hFile, const char* pFileName ) {
+CMmioEmbeddedFile::CMmioEmbeddedFile( HANDLE hFile, const char* pFileName, unsigned long long offset ) {
     ctor();
     Open( hFile, pFileName );
+    mmioSeek(m_hMmio, offset, CFile::begin);
 }
 
 CMmioEmbeddedFile::~CMmioEmbeddedFile() {
