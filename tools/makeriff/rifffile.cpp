@@ -161,7 +161,7 @@ void CRiffFile::GetChunkStart() {
 void CRiffFile::Parse(CString inFile, CString outFile) {
     if (OpenInputFile(inFile) == FALSE) {
         CString errString;
-        errString.Format("opening file %s for reading", inFile);
+        errString.Format("opening file %s for reading", (LPCSTR)inFile);
         ReportError(errString);
     }
 
@@ -172,7 +172,7 @@ void CRiffFile::Parse(CString inFile, CString outFile) {
     if (pOutFile->Open(outFile, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive | CFile::typeBinary) ==
         FALSE) {
         CString errString;
-        errString.Format("opening file %s for writing", outFile);
+        errString.Format("opening file %s for writing", (LPCSTR)outFile);
         ReportError(errString);
     }
 
