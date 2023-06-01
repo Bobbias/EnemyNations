@@ -720,9 +720,10 @@ void CRiffFile::ProcessIfdef() {
     while (IsWhiteSpace(PeekNextChar()) == FALSE && index < sizeof(aDefinition) - 1)
         aDefinition[index++] = GetNextChar();
     aDefinition[index] = 0;
+    auto definitionString = CString(aDefinition);
 
-    void *dummy;
-    if (symbolTable.Lookup(aDefinition, dummy) == FALSE)
+    auto result = std::find(symbolTable.begin(), symbolTable.end(), definitionString);
+    if (*result != definitionString)
         SkipToElseOrEndif();
 }
 
@@ -876,13 +877,11 @@ BOOL CRiffFile::OpenInputFile(const char *pInFilename) {
 
 void CRiffFile::AddDefinition(const char *pNewDefinition) {
     //  Check for duplicate define.
+    auto newDefinition = CString (pNewDefinition);
     void *dummy;
-    if (symbolTable.Lookup(pNewDefinition, dummy) != FALSE)
+    auto result = std::find(symbolTable.begin(), symbolTable.end(), newDefinition);
+    if ( *result == newDefinition)
         printf("Warning - duplicate define %s, line %d\n", pNewDefinition, currentLine);
     else
-        //  Add this definition to the table of definitions we have.
-        //  It doesn't matter what value we put in there, we'll be checking for
-        //  existence, not result.
-        //  This could throw a memory exception.
-        symbolTable[pNewDefinition] = (void *) 1;
+        symbolTable.push_back(newDefinition);
 }

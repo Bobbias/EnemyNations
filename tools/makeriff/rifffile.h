@@ -1,6 +1,7 @@
 #ifndef RIFFFILE_H
 #define RIFFFILE_H
 
+#include <vector>
 #include "stdafx.h"
 
 class CRiffFile {
@@ -65,7 +66,7 @@ class CRiffFile {
     CStdioFile *pOutFile;
 
     //  A map of currently defined symbols.
-    CMapStringToPtr symbolTable;
+    std::vector<CString> symbolTable;
 
     CString name;
     int currentLine;
