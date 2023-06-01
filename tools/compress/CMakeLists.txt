@@ -31,14 +31,14 @@ target_compile_definitions(compit PUBLIC
 #message("cdefs: ${cdefs}")
 #
 target_include_directories(compit PUBLIC
-        ../tools/
-        ../windward/wind22/include/)
+        ..
+        ../../windward/wind22/include)
 
 target_link_libraries(compit PUBLIC
         wind22.lib)
 
 target_link_directories(compit PUBLIC
-        ../cmake-build-release/windward/wind22)
+        ../../cmake-build-release/windward/wind22)
 
 
 set_property(TARGET compit PROPERTY CXX_STANDARD 11)

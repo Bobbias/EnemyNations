@@ -1,6 +1,6 @@
-#include "STDAFX.H"
+#include "stdafx.h"
 
-#include "RIFFFILE.H"
+#include "rifffile.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

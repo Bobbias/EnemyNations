@@ -28,7 +28,7 @@ add_subdirectory(enations_latest/src)
 # makeriff.exe
 ###############################
 
-add_subdirectory(makeriff)
+add_subdirectory(tools/makeriff)
 
 ###############################
 # sprite.exe
@@ -52,7 +52,7 @@ add_subdirectory(src/cdf)
 # compit.exe
 ###############################
 
-add_subdirectory(compress)
+add_subdirectory(tools/compress)
 
 ###############################
 # vdmplay.dll

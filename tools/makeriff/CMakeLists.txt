@@ -32,7 +32,7 @@ get_target_property(cdefs makeriff COMPILE_DEFINITIONS)
 message("cdefs: ${cdefs}")
 
 target_include_directories(makeriff PUBLIC
-        ../../tools/
+        ../../../tools
         ../../windward/wind22/include/)
 
 

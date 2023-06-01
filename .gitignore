@@ -23,9 +23,9 @@
 /tools/vdmplay/UT/WINREL/
 /tools/vdmplay/ISERVE/WINDEBUG/
 /tools/vdmplay/ISERVE/WINREL/
-/makeriff/.vs/
-/makeriff/Debug/
-/makeriff/Release/
+/tools/makeriff/.vs/
+/tools/makeriff/Debug/
+/tools/makeriff/Release/
 /enations_latest/src/WinRel/
 /enations_latest/src/WinDebug/
 /enations_latest/src/cmake-build-release/
