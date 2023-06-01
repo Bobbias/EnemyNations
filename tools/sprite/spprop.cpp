@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "sprite.h"
-#include "SPProp.h"
+#include "spprop.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

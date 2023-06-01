@@ -10,7 +10,7 @@
 #include "cdirdlg.h"
 #include "medcut.h"
 #include "varcut.h"
-#include "PalDoc.h"
+#include "paldoc.h"
 #include "sprite.h"
 #include "sptypes.h"
 #include "terrain.h"

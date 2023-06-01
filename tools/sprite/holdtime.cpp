@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "sprite.h"
-#include "HoldTime.h"
+#include "holdtime.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

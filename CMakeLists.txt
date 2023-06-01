@@ -34,7 +34,7 @@ add_subdirectory(tools/makeriff)
 # sprite.exe
 ###############################
 
-add_subdirectory(sprite)
+add_subdirectory(tools/sprite)
 
 ###############################
 # wind22.lib

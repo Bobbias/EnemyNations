@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "sprite.h"
-#include "StatusDlg.h"
+#include "statusdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

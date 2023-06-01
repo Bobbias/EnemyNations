@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "sprite.h"
-#include "PalView.h"
+#include "palview.h"
 
 IMPLEMENT_DYNCREATE(CPalView, CView)
 
