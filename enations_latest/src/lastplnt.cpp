@@ -27,6 +27,8 @@
 #include "terrain.inl"
 #include "tstsnds.h"
 
+#include <processenv.h>
+
 #include <ctype.h>
 #include <locale.h>
 #include <new.h>
@@ -44,11 +46,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 
 
-#define USE_SMARTHEAP
-#ifdef USE_SMARTHEAP
-#include <smartheap/smrtheap.h>
-unsigned MemDefaultPoolFlags = MEM_POOL_SERIALIZE;
-#endif
+
 
 extern HANDLE hRenderEvent;
 extern BOOL   bDoSubclass;
@@ -383,10 +381,6 @@ void CConquerApp::Log( char const* pText )
 BOOL CConquerApp::InitInstance( )
 {
 
-#ifdef USE_SMARTHEAP
-//    MemRegisterTask( );
-//    MemSetErrorHandler( NULL );
-#endif
 
     InitWindwardLib1( this );
 
@@ -632,8 +626,9 @@ _flush2:
     wc.hIcon         = LoadIcon( IDI_MAIN );
     wc.hCursor       = LoadStandardCursor( IDC_ARROW );
     wc.lpszClassName = m_sClsName;
-    if ( !AfxRegisterClass( &wc ) )
+    if ( !AfxRegisterClass( &wc ) ) {
         return FALSE;
+    }
 
     HWND hPrevWnd = ::FindWindow( m_sClsName, m_sAppName );
     if ( hPrevWnd != NULL )
@@ -1430,7 +1425,7 @@ _flush2:
             try
             {
                 m_wndMovie.AddMovie( "logo.avi" );
-                m_wndMovie.AddMovie( "headgame.avi" );
+//                m_wndMovie.AddMovie( "headgame.avi" );  // This file doesnt exist
                 m_wndMovie.AddMovie( "intro.avi" );
                 m_wndMovie.Create( FALSE );
             }
@@ -1439,8 +1434,9 @@ _flush2:
                 PostIntro( );
             }
         }
-        else
-            PostIntro( );
+        else {
+            PostIntro();
+        }
 
     MovieDone:;
     }
@@ -1450,7 +1446,7 @@ _flush2:
         CatchNum( iErr );
         return ( 0 );
     }
-    catch ( SE_Exception e )
+    catch ( SE_Exception& e )
     {
         CatchSE( e );
         return ( 0 );
@@ -1614,8 +1610,9 @@ void CConquerApp::PostIntro( )
         theMusicPlayer.Open( GetProfileInt( "Game", "Music", 100 ), GetProfileInt( "Game", "Sound", 100 ), m_mMode,
                              SFXGROUP::global );
 
-        if ( GetProfileInt( "Game", "CustomUI", W32s != iWinType ) )
-            InitCustomUI( );
+        if ( GetProfileInt( "Game", "CustomUI", W32s != iWinType ) ) {
+            InitCustomUI();
+        }
         theMusicPlayer.YieldPlayer( );
     }
 
@@ -1648,10 +1645,14 @@ void CConquerApp::InitCustomUI( )
 
     CTextColors textcolorsStatic( RGB( 230, 190, 120 ), RGB( 84, 96, 216 ), RGB( 100, 80, 55 ) );
 
-    CGlobalSubClass::Subclass( theBitmaps.GetByIndex( CBitmapLib::DLG_BKGND ), theTextBtnData.m_pcDib,
-                               theLargeTextBtnData.m_pcDib, theBitmaps.GetByIndex( CBitmapLib::DLG_RADIO_BUTTONS ),
-                               theBitmaps.GetByIndex( CBitmapLib::DLG_CHECK_BOXES ), &theLargeTextBtnData.m_fntText,
-                               SOUNDS::GetID( SOUNDS::button ), textcolorsButton, textcolorsStatic );
+    auto bkgnd = theBitmaps.GetByIndex(CBitmapLib::DLG_BKGND);
+    auto rdioBtn = theBitmaps.GetByIndex(CBitmapLib::DLG_RADIO_BUTTONS);
+    auto chkBox = theBitmaps.GetByIndex(CBitmapLib::DLG_CHECK_BOXES);
+    auto soundid = SOUNDS::GetID(SOUNDS::button);
+
+    CGlobalSubClass::Subclass( bkgnd, theTextBtnData.m_pcDib, theLargeTextBtnData.m_pcDib,
+                               rdioBtn, chkBox, &theLargeTextBtnData.m_fntText, soundid,
+                               textcolorsButton, textcolorsStatic );
 
     CFramePainter::SetDrawInfo( theBitmaps.m_ppDibs + CBitmapLib::FRAME_LL_CORNER );
 
@@ -1963,7 +1964,6 @@ void CConquerApp::AssertValid( ) const
 
 CDlgMain::CDlgMain( CWnd* pParent /*=NULL*/ ): CDialog( CDlgMain::IDD, pParent )
 {
-
     //{{AFX_DATA_INIT(CDlgMain)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
