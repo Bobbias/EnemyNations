@@ -600,9 +600,9 @@ class CGame : public CObject
         return ( VP_SESSIONSERVER );
     }
     void AddToQueue( CNetCmd const* pCmd, int iLen );
-    void FreeQueueElem( CNetCmd* pCmd );
+    void FreeQueueElement(CNetCmd* pCmd );
     void EmptyQueue( );
-    void ProcessMsg( CNetCmd* pCmd );
+    void ProcessMessage(CNetCmd* pCmd );
     void SendToServer( CNetCmd const* pMsg, int iLen );
     void PostToServer( CNetCmd const* pMsg, int iLen );
     void PostToAll( CNetCmd const* pMsg, int iLen, BOOL bAI = TRUE );
@@ -663,8 +663,8 @@ class CGame : public CObject
         m_bAI = bSrvr;
     }
 
-    BOOL AreMsgsPaused( ) const { return m_bPauseMsgs; }
-    BOOL CheckAreMsgsPaused( )
+    BOOL AreMessagesPaused( ) const { return m_bPauseMsgs; }
+    BOOL CheckAreMessagesPaused( )
     {
         if ( !m_bPauseMsgs )
             return FALSE;
@@ -673,38 +673,38 @@ class CGame : public CObject
         m_bPauseMsgs = FALSE;
         return FALSE;
     }
-    void SetMsgsPaused( BOOL bPause );
-    void PauseTimerFired( ) { m_uTimer = 0; }
+    void SetMessagesPaused( BOOL bPause );
+    void ResetPauseTimer( ) { m_uTimer = 0; }
 
-    BOOL IsToldPause( ) const { return m_bToldPause; }
-    void SetToldPause( ) { m_bToldPause = TRUE; }
-    void ClrToldPause( ) { m_bToldPause = FALSE; }
-    BOOL IsNetPause( ) const { return m_bNetPause; }
-    void SetNetPause( ) { m_bNetPause = TRUE; }
-    void ClrNetPause( ) { m_bNetPause = FALSE; }
+    BOOL ShouldPause( ) const { return m_bShouldPause; }
+    void SetShouldPause( ) { m_bShouldPause = TRUE; }
+    void ClearShouldPause( ) { m_bShouldPause = FALSE; }
+    BOOL ShouldNetPause( ) const { return m_bShouldNetPause; }
+    void SetNetPause( ) { m_bShouldNetPause = TRUE; }
+    void ClearNetPause( ) { m_bShouldNetPause = FALSE; }
 
-    BOOL DoMsgs( ) const
+    BOOL ShouldProcessMessages( ) const
     {
         ASSERT_STRICT_VALID( this );
         return ( m_bMessages );
     }
-    void SetMsgs( BOOL bMsgs )
+    void SetShouldProcessMessages(BOOL bMessages )
     {
         ASSERT_STRICT_VALID( this );
-        m_bMessages = bMsgs;
+        m_bMessages = bMessages;
     }
 
-    BOOL DoAnim( ) const
+    BOOL ShouldAnimate( ) const
     {
         ASSERT_STRICT_VALID( this );
         return ( m_bAnimate );
     }
-    BOOL DoOper( ) const
+    BOOL ShouldOperate( ) const
     {
         ASSERT_STRICT_VALID( this );
         return ( m_bOperate );
     }
-    void SetAnim( BOOL bAnimate )
+    void SetShouldAnimate( BOOL bAnimate )
     {
         ASSERT_STRICT_VALID( this );
         if ( !m_bHP )
@@ -713,7 +713,7 @@ class CGame : public CObject
             m_dwFrameTimeLast = timeGetTime( );
         m_bAnimate = bAnimate;
     }
-    void SetOper( BOOL bOperate )
+    void SetShouldOperate( BOOL bOperate )
     {
         ASSERT_STRICT_VALID( this );
         if ( ( bOperate ) && ( !m_bOperate ) )
@@ -813,7 +813,7 @@ class CGame : public CObject
     int  SaveGame( CWnd* pPar );
 
 
-    CPtrList m_lstMsgs;  // posted messages
+    CPtrList m_messagePointerList;  // posted messages
     mempool_large m_memPoolLarge;
     mempool_small m_memPoolSmall;
 
@@ -883,8 +883,8 @@ class CGame : public CObject
     BOOL m_bAI;         // TRUE if have AI players (on server only)
 
     BOOL m_bPauseMsgs;  // don't post high volume messages
-    BOOL m_bToldPause;  // told others to not post high-volume to me
-    BOOL m_bNetPause;   // net told me to stop posting
+    BOOL m_bShouldPause;  // told others to not post high-volume to me
+    BOOL m_bShouldNetPause;   // net told me to stop posting
     BOOL m_bUnPauseMe;  // unpause me next oppo
     UINT m_uTimer;
 

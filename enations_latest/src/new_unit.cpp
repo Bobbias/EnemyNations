@@ -2857,7 +2857,7 @@ BOOL CBuilding::InitRocket( CHexCoord const& hex, BOOL bMe )
             DropUnits( aiVehicles[iOn], theTransports.GetData( aiVehicles[iOn] )->GetWheelType( ),
                        GetOwner( )->m_InitData.GetSupplies( aiSupplies[iOn] ), iTotalLeft, aiTime, iBlkSiz, m_hexExit,
                        hexUL );
-            if ( !theGame.DoMsgs( ) )
+            if ( !theGame.ShouldProcessMessages() )
                 return ( TRUE );
         }
 

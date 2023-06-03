@@ -675,14 +675,14 @@ void CGame::AddToQueue( CNetCmd const* pCmd, int iLen )
         ( (CNetCmd*)pBuf )->m_bMemPool = 0;
 
     EnterCriticalSection( &cs );
-    m_lstMsgs.AddTail( pBuf );
+    m_messagePointerList.AddTail(pBuf );
 
     // throttle messages off if a net game
-    if ( ( theGame.IsNetGame( ) ) && ( !theGame.IsToldPause( ) ) )
+    if ( ( theGame.IsNetGame( ) ) && ( !theGame.ShouldPause() ) )
     {
-        if ( theGame.m_lstMsgs.GetCount( ) >= MAX_NUM_MESSAGES )
+        if (theGame.m_messagePointerList.GetCount( ) >= MAX_NUM_MESSAGES )
         {
-            theGame.SetToldPause( );
+            theGame.SetShouldPause();
 
             LeaveCriticalSection( &cs );
             CMsgPauseMsg msg( TRUE );
@@ -701,11 +701,12 @@ void CGame::AddToQueue( CNetCmd const* pCmd, int iLen )
 void CGame::EmptyQueue( )
 {
 
-    SetMsgs( FALSE );
+    SetShouldProcessMessages(FALSE);
 
     EnterCriticalSection( &cs );
 
-    while ( theGame.m_lstMsgs.GetCount( ) > 0 ) FreeQueueElem( (CNetCmd*)theGame.m_lstMsgs.RemoveHead( ) );
+    while (theGame.m_messagePointerList.GetCount( ) > 0 )
+        FreeQueueElement((CNetCmd *) theGame.m_messagePointerList.RemoveHead());
 
 //    MemPoolShrink( m_memPoolLarge );
 //    MemPoolShrink( m_memPoolSmall );
@@ -716,7 +717,7 @@ void CGame::EmptyQueue( )
 void CNetApi::OnNetFlowOff( )
 {
 
-    if ( !theGame.IsNetPause( ) )
+    if ( !theGame.ShouldNetPause() )
     {
         theGame.SetNetPause( );
 
@@ -729,7 +730,7 @@ void CNetApi::OnNetFlowOff( )
             theApp.Log( sBuf );
         }
 
-        theGame.SetMsgsPaused( TRUE );
+        theGame.SetMessagesPaused(TRUE);
     }
 }
 
@@ -745,7 +746,7 @@ void CNetApi::OnNetFlowOn( )
         theApp.Log( sBuf );
     }
 
-    theGame.SetMsgsPaused( FALSE );
+    theGame.SetMessagesPaused(FALSE);
 }
 
 LRESULT CNetApi::OnNetMsg( WPARAM wParam, LPARAM lParam )
@@ -2729,7 +2730,7 @@ static void NeedSaveInfo( CNetNeedSaveInfo* pMsg )
     }
 }
 
-void CGame::ProcessMsg( CNetCmd* pCmd )
+void CGame::ProcessMessage(CNetCmd* pCmd )
 {
 
 #ifdef _LOG_LAG
@@ -2748,7 +2749,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
     }
 #endif
 
-    ASSERT( theGame.DoMsgs( ) );
+    ASSERT(theGame.ShouldProcessMessages() );
     ASSERT_VALID( this );
 
     switch ( pCmd->GetType( ) )
@@ -3122,7 +3123,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
         {
             theApp.m_wndMain._EnableGameWindows( FALSE );
             theApp.GetDlgPause( )->Show( CDlgPause::client );
-            theGame.SetOper( FALSE );
+            theGame.SetShouldOperate(FALSE);
         }
         break;
 
@@ -3131,7 +3132,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
         {
             theApp.m_wndMain._EnableGameWindows( TRUE );
             theApp.GetDlgPause( )->Show( CDlgPause::off );
-            theGame.SetOper( TRUE );
+            theGame.SetShouldOperate(TRUE);
         }
         break;
 
@@ -3250,7 +3251,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
                 theApp.Log( sBuf );
             }
 
-            SetMsgsPaused( pMsg->m_bPause );
+            SetMessagesPaused(pMsg->m_bPause);
             break;
         }
 
@@ -3267,7 +3268,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
                 theApp.Log( sBuf );
             }
             pPlr->m_bPauseMsgs = TRUE;
-            SetMsgsPaused( TRUE );
+            SetMessagesPaused(TRUE);
             break;
         }
 
@@ -3294,7 +3295,7 @@ void CGame::ProcessMsg( CNetCmd* pCmd )
             sprintf( sBuf, "Pause: Off at %d:%d", st.wMinute, st.wSecond );
             theApp.Log( sBuf );
         }
-        SetMsgsPaused( FALSE );
+        SetMessagesPaused(FALSE);
         break;
     }
 

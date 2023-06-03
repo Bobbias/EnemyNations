@@ -1156,7 +1156,7 @@ void CUnit::Shoot (CUnit * pUnit, int iLOS)
 
     // fire away
     // we can do this because this message is for the projectile sprite, NOT the damage
-    if ( ! theGame.AreMsgsPaused () )
+    if ( !theGame.AreMessagesPaused() )
         {
         int iNum = theGame.m_msgShoot.AddShot ( this, pUnit, mlTarget, dtShoot.quot );
         if ( iNum >= NUM_SHOOT_ELEM )

@@ -219,7 +219,7 @@ void CDlgPlyrList::OnPlyrOptions( )
 void CDlgPlyrList::OnPlyrPause( )
 {
 
-    BOOL bPause = theGame.DoOper( );
+    BOOL bPause = theGame.ShouldOperate();
 
     theApp.m_wndMain._EnableGameWindows( !bPause );
 

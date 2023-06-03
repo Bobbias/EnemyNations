@@ -318,7 +318,7 @@ void CGame::_Event (int ID, int iTyp, char const * psText, int iVoice)
 		return;
 
 	// not during cut scenes
-	if ( ! theGame.DoOper () )
+	if ( !theGame.ShouldOperate() )
 		return;
 
 	// don't repeat ourselves too often

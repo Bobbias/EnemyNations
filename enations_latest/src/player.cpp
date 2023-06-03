@@ -964,7 +964,7 @@ void CGame::ctor( )
     m_bHP       = FALSE;
 
     m_uTimer     = 0;
-    m_bUnPauseMe = m_bToldPause = m_bNetPause = m_bPauseMsgs = m_bMessages = m_bAnimate = m_bOperate = FALSE;
+    m_bUnPauseMe = m_bShouldPause = m_bShouldNetPause = m_bPauseMsgs = m_bMessages = m_bAnimate = m_bOperate = FALSE;
     m_dwElapsedTime                                                                                  = 0;
     m_dwOperTimeLast = m_dwFrameTimeLast = timeGetTime( );
     m_dwFramesElapsed = m_dwOpersElapsed = m_dwOperSecElapsed = m_dwOperSecFrames;
@@ -1052,7 +1052,7 @@ void CGame::Open( BOOL bLocal )
     }
 
     SetState( open );
-    SetMsgs( TRUE );
+    SetShouldProcessMessages(TRUE);
 }
 
 // get the item in the list
@@ -1209,7 +1209,7 @@ int CGame::GetGameMul( ) const
     return ( iSpeed );
 }
 
-void CGame::SetMsgsPaused( BOOL bPause )
+void CGame::SetMessagesPaused(BOOL bPause )
 {
 
     if ( bPause )
@@ -1228,7 +1228,7 @@ void CGame::SetMsgsPaused( BOOL bPause )
         theApp.m_wndMain.KillTimer( m_uTimer );
         m_uTimer = 0;
     }
-    theGame.ClrNetPause( );
+    theGame.ClearNetPause();
 }
 
 void CGame::StartAllPlayers( ) const
@@ -1324,7 +1324,7 @@ void CGame::SendToServer( CNetCmd const* pMsg, int iLen )
 
     EnterCriticalSection( &cs );
 
-    ProcessMsg( (CNetCmd*)pMsg );
+    ProcessMessage((CNetCmd *) pMsg);
 
     LeaveCriticalSection( &cs );
 }
@@ -1577,7 +1577,7 @@ void CGame::AiTakeOverPlayer( CPlayer* pPlr, BOOL bStartThread, BOOL bShowDlg )
                     goto NoUnPause;
                 }
             }
-            SetMsgsPaused( FALSE );
+            SetMessagesPaused(FALSE);
         }
     NoUnPause:
 
@@ -1730,7 +1730,7 @@ void CGame::RemovePlayer( CPlayer* pPlr )
                     goto NoUnPause;
                 }
             }
-            SetMsgsPaused( FALSE );
+            SetMessagesPaused(FALSE);
         }
     }
 NoUnPause:
@@ -1853,7 +1853,7 @@ void CGame::Close( )
 
     ASSERT_VALID( this );
 
-    SetMsgs( FALSE );
+    SetShouldProcessMessages(FALSE);
 
     delete m_pXferFromServer;
     m_pXferFromServer = NULL;
@@ -1882,26 +1882,26 @@ void CGame::ProcessAllMessages( )
     while ( TRUE )
     {
         EnterCriticalSection( &cs );
-        if ( m_lstMsgs.GetCount( ) <= 0 )
+        if (m_messagePointerList.GetCount( ) <= 0 )
         {
             LeaveCriticalSection( &cs );
             break;
         }
-        char* pBuf = (char*)m_lstMsgs.RemoveHead( );
+        char* pBuf = (char*)m_messagePointerList.RemoveHead( );
         if ( pBuf == NULL )
         {
             LeaveCriticalSection( &cs );
             break;
         }
-        ProcessMsg( (CNetCmd*)pBuf );
-        FreeQueueElem( (CNetCmd*)pBuf );
+        ProcessMessage((CNetCmd *) pBuf);
+        FreeQueueElement((CNetCmd *) pBuf);
 
         // throttle messages back on if a net game
-        if ( ( theGame.IsNetGame( ) ) && ( theGame.IsToldPause( ) ) )
+        if ( ( theGame.IsNetGame( ) ) && (theGame.ShouldPause() ) )
         {
-            if ( theGame.m_lstMsgs.GetCount( ) <= MIN_NUM_MESSAGES )
+            if (theGame.m_messagePointerList.GetCount( ) <= MIN_NUM_MESSAGES )
             {
-                theGame.ClrToldPause( );
+                theGame.ClearShouldPause();
 
                 LeaveCriticalSection( &cs );
                 CMsgPauseMsg msg( FALSE );
@@ -2438,7 +2438,7 @@ int CGame::SaveGame( CWnd* pPar )
         SetState( save );
 
         // stop processing and clear out final messages
-        theGame.SetOper( FALSE );
+        theGame.SetShouldOperate(FALSE);
         theApp.BaseYield( );
         ProcessAllMessages( );
 
@@ -2472,7 +2472,7 @@ int CGame::SaveGame( CWnd* pPar )
         CoDec::FreeBuf( pComp );
         filDest.Close( );
 
-        theGame.SetOper( TRUE );
+        theGame.SetShouldOperate(TRUE);
         LeaveCriticalSection( &cs );
         theApp.m_wndMain._EnableGameWindows( TRUE );
 
@@ -2487,7 +2487,7 @@ int CGame::SaveGame( CWnd* pPar )
         csPrintf( &sMsg, (char const*)m_sFileName );
         AfxMessageBox( sMsg );
 
-        theGame.SetOper( TRUE );
+        theGame.SetShouldOperate(TRUE);
         LeaveCriticalSection( &cs );
         theApp.m_wndMain._EnableGameWindows( TRUE );
 

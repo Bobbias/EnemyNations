@@ -5,7 +5,7 @@
 #include "player.h"
 
 // player.h
-inline void CGame::FreeQueueElem(CNetCmd *pCmd) {
+inline void CGame::FreeQueueElement(CNetCmd *pCmd) {
     if (pCmd->m_bMemPool) m_memPoolSmall.free(pCmd);
     else m_memPoolLarge.free(pCmd);
 }

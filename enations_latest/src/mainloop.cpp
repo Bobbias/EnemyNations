@@ -346,49 +346,58 @@ BOOL CConquerApp::CheckYield( )
 void CConquerApp::ProcessAllMessages( )
 {
 
-    if ( !theGame.DoMsgs( ) )
+    if ( !theGame.ShouldProcessMessages() )
         return;
 
     // process all messages so we have none pending
     while ( TRUE )
     {
+        OutputDebugString("CConquerApp::ProcessAllMessages: Infinite loop start\n");
         EnterCriticalSection( &cs );
-        if ( theGame.m_lstMsgs.GetCount( ) <= 0 )
+        if (theGame.m_messagePointerList.GetCount( ) <= 0 )
         {
+            OutputDebugString("CConquerApp::ProcessAllMessages: no messages to process\n");
             LeaveCriticalSection( &cs );
             break;
         }
-        char* pBuf = (char*)theGame.m_lstMsgs.RemoveHead( );
+        OutputDebugString("CConquerApp::ProcessAllMessages: extracting next message\n");
+        char* pBuf = (char*)theGame.m_messagePointerList.RemoveHead( );
         if ( pBuf == NULL )
         {
+            OutputDebugString("CConquerApp::ProcessAllMessages: next message was null\n");
             LeaveCriticalSection( &cs );
             break;
         }
-        theGame.ProcessMsg( (CNetCmd*)pBuf );
-        theGame.FreeQueueElem( (CNetCmd*)pBuf );
+        OutputDebugString("CConquerApp::ProcessAllMessages: before ProcessMessage\n");
+        theGame.ProcessMessage((CNetCmd *) pBuf);
+        theGame.FreeQueueElement((CNetCmd *) pBuf);
+        OutputDebugString("CConquerApp::ProcessAllMessages: after ProcessMessage and FreeQueueElement\n");
 
         // throttle messages back on if a net game
-        if ( ( theGame.IsNetGame( ) ) && ( theGame.IsToldPause( ) ) )
-        {
-            if ( theGame.m_lstMsgs.GetCount( ) <= MIN_NUM_MESSAGES )
-            {
-                theGame.ClrToldPause( );
+        if ( ( theGame.IsNetGame( ) ) && ( theGame.ShouldPause() ) ) {
+            if (theGame.m_messagePointerList.GetCount( ) <= MIN_NUM_MESSAGES ) {
+                OutputDebugString("CConquerApp::ProcessAllMessages: minimum net messages reaches, unpausing other players\n");
+                theGame.ClearShouldPause();
 
                 LeaveCriticalSection( &cs );
+
                 CMsgPauseMsg msg( FALSE );
                 if ( theGame.AmServer( ) )
                     theGame.PostToAllClients( &msg, sizeof( msg ) );
                 else
                     theGame.PostToServer( &msg, sizeof( msg ) );
+
                 EnterCriticalSection( &cs );
             }
         }
 
+        OutputDebugString("CConquerApp::ProcessAllMessages: before final LeaveCriticalSection\n");
         LeaveCriticalSection( &cs );
 
         // see if we need to render
+        OutputDebugString("CConquerApp::ProcessAllMessages: before CheckYield\n");
         if ( CheckYield( ) )
-            if ( !theGame.DoMsgs( ) )
+            if ( !theGame.ShouldProcessMessages() )
                 return;
     }
 }
@@ -413,7 +422,7 @@ void CConquerApp::_RenderScreens( )
     theGame.m_dwFramesElapsed = dtFrame.quot;
     theGame.m_dwFrameTimeLast = dwNow + dtFrame.rem;
 
-    if ( !theGame.DoAnim( ) )
+    if ( !theGame.ShouldAnimate() )
     {
         m_dwMaxNextRender = theGame.m_dwFrameTimeLast + dwFrameCheck;
         return;
@@ -507,7 +516,7 @@ void CConquerApp::GraphicsEnginePump( )
             _RenderScreens( );
 
         // sleep if we're playing
-        if ( theGame.DoOper( ) )
+        if (theGame.ShouldOperate() )
         {
             int dwNow        = timeGetTime( );
             int dwOperSleep  = (int)theGame.m_dwOperTimeLast + 1000 / FRAME_RATE - dwNow;
@@ -536,7 +545,7 @@ void CConquerApp::GraphicsEnginePump( )
     theGame.m_dwOperTimeLast  = theGame.GettimeGetTime( ) - dtFrame.rem;
     theGame.m_dwOpersElapsed  = theGame.m_dwFramesElapsed * theGame.m_iSpeedMul;
 
-    if ( theGame.DoOper( ) )
+    if (theGame.ShouldOperate() )
     {
         // time played
         theGame.m_dwElapsedTime += theGame.m_dwOpersElapsed;
@@ -704,8 +713,8 @@ void CConquerApp::GraphicsEnginePump( )
                     if ( iRtn > 0 )
                     {
                         // turn off while doing this
-                        theGame.SetOper( FALSE );
-                        theGame.SetAnim( FALSE );
+                        theGame.SetShouldOperate(FALSE);
+                        theGame.SetShouldAnimate(FALSE);
                         LeaveCriticalSection( &cs );
 
                         theCutScene.PlayEnd( CWndCutScene::scenario_end );
@@ -744,8 +753,8 @@ void CConquerApp::GraphicsEnginePump( )
                             return;
                         }
 
-                        theGame.SetAnim( TRUE );
-                        theGame.SetOper( TRUE );
+                        theGame.SetShouldAnimate(TRUE);
+                        theGame.SetShouldOperate(TRUE);
                         EnterCriticalSection( &cs );
                     }
                 }
@@ -871,7 +880,7 @@ void CConquerApp::GraphicsEnginePump( )
             }  // HaveHP
 
             if ( CheckYield( ) )
-                if ( !theGame.DoOper( ) )
+                if ( !theGame.ShouldOperate() )
                     goto NoOper;
         }  // 1 second code
 
@@ -911,7 +920,7 @@ void CConquerApp::GraphicsEnginePump( )
             // see if we need to render
             if ( CheckYield( ) )
             {
-                if ( !theGame.DoOper( ) )
+                if ( !theGame.ShouldOperate() )
                 {
                     LeaveCriticalSection( &cs );
                     goto NoOper;
@@ -946,7 +955,7 @@ void CConquerApp::GraphicsEnginePump( )
 
         // see if we need to render
         if ( CheckYield( ) )
-            if ( !theGame.DoOper( ) )
+            if ( !theGame.ShouldOperate() )
             {
                 TRAP( );
                 LeaveCriticalSection( &cs );
@@ -954,7 +963,7 @@ void CConquerApp::GraphicsEnginePump( )
             }
 
         // post built up messages
-        if ( !theGame.CheckAreMsgsPaused( ) )
+        if ( !theGame.CheckAreMessagesPaused() )
         {
             //   buildings
             CMsgCompUnitDamage    msgDam;
@@ -1473,7 +1482,7 @@ void CBuilding::Construct( )
     m_iLastPer  = iPer;
 
     // tell the world
-    if ( !theGame.AreMsgsPaused( ) )
+    if ( !theGame.AreMessagesPaused() )
     {
         CMsgBldgStat msg( this );
         msg.m_iFlags = CMsgBldgStat::built;

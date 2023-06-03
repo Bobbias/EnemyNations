@@ -400,7 +400,7 @@ void CConquerApp::CreateNewWorld (unsigned uRand, AIinit * pAiData, int iSide, i
 	theGame.SetElapsedSeconds (0);
 
 	// init the global vars
-	ASSERT ((m_bInGame == FALSE) && (! theGame.DoOper ()) && (! theGame.DoAnim ()));
+	ASSERT ((m_bInGame == FALSE) && (!theGame.ShouldOperate()) && (!theGame.ShouldAnimate()));
 	m_bInGame = TRUE;
 	bForceDraw = FALSE;
 	bInvAmb = FALSE;
@@ -873,15 +873,15 @@ void CConquerApp::LetsGo ()
 		}
 
 	// enable windows, bring area to the top
-	theGame.SetMsgs (TRUE);
-	theGame.SetAnim (TRUE);
+    theGame.SetShouldProcessMessages(TRUE);
+    theGame.SetShouldAnimate(TRUE);
 
 	// we want each generating different random numbers in case of vehicle contention
 	MySrand ( MySeed () );
 
 	theNet.SetMode (CNetApi::playing);
 	theGame.SetState (CGame::play);
-	theGame.SetOper (TRUE);
+    theGame.SetShouldOperate(TRUE);
 
 	// we turn the game on, process all messages, sleep, etc so the windows are ready to GO
 	// when we activate them.
@@ -1078,9 +1078,9 @@ void CConquerApp::RestartWorld ()
 
 	DestroyMain ();
 
-	theGame.SetMsgs (TRUE);
-	theGame.SetAnim (TRUE);
-	theGame.SetOper (TRUE);
+    theGame.SetShouldProcessMessages(TRUE);
+    theGame.SetShouldAnimate(TRUE);
+    theGame.SetShouldOperate(TRUE);
 	theNet.SetMode (CNetApi::playing);
 }
 
@@ -1093,8 +1093,8 @@ void CConquerApp::DestroyWorld ()
 //BUGBUG	theDiskCache.KillAllRequests ();
 
 	// clean out the message queue
-	theGame.SetAnim (FALSE);
-	theGame.SetOper (FALSE);
+    theGame.SetShouldAnimate(FALSE);
+    theGame.SetShouldOperate(FALSE);
 	theGame.EmptyQueue ();
 
 	// we may not be in the game yet
@@ -1109,7 +1109,7 @@ void CConquerApp::DestroyWorld ()
 
 	theNet.SetMode (CNetApi::ending);
 	theGame.SetState (CGame::close);
-	theGame.SetMsgs (FALSE);
+    theGame.SetShouldProcessMessages(FALSE);
 
 	// close down the AI
 	myThreadClose ((THREADEXITFUNC) AiExit);
@@ -1264,8 +1264,8 @@ void CConquerApp::DestroyWorld ()
 void CConquerApp::ClearWorld ()
 {
 
-	theGame.SetAnim (FALSE);
-	theGame.SetOper (FALSE);
+    theGame.SetShouldAnimate(FALSE);
+    theGame.SetShouldOperate(FALSE);
 
 	theNet.SetMode (CNetApi::ending);
 	theGame.SetState (CGame::close);
@@ -1278,7 +1278,7 @@ void CConquerApp::ClearWorld ()
 		return;
 
 	// clean out the message queue
-	theGame.SetMsgs (FALSE);
+    theGame.SetShouldProcessMessages(FALSE);
 	theGame.EmptyQueue ();
 
 	// close down the AI

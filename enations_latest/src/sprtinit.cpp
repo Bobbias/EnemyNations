@@ -1364,12 +1364,7 @@ CSpriteView::CopyAnims(
 //---------------------------------------------------------------------------
 // CSpriteParms::CSpriteParms
 //---------------------------------------------------------------------------
-CSpriteParms::CSpriteParms(
-        CMmio *pmmio,
-        unsigned uTime,
-        int iTypeOverride,
-        int iBitsPerPixel)
-        :
+CSpriteParms::CSpriteParms(CMmio *pmmio, unsigned int uTime, int iTypeOverride, int iBitsPerPixel) :
         m_uTime(uTime),
         m_iBitsPerPixel(iBitsPerPixel),
         m_pspritecollection(NULL) {
@@ -1443,9 +1438,7 @@ CSpriteParms::CSpriteParms(
 //---------------------------------------------------------------------------
 // CSprite::SetTime - Set hold time for all ambients of all views
 //---------------------------------------------------------------------------
-void
-CSprite::SetTime(
-        unsigned uTime) {
+void CSprite::SetTime( unsigned int uTime ) {
     for (int i = 0; i < GetNumViews(); ++i) {
         CSpriteView *pspriteview = GetSpriteView(i);
 
@@ -1461,9 +1454,7 @@ CSprite::SetTime(
 //---------------------------------------------------------------------------
 // CSprite::VirtualConstruct
 //---------------------------------------------------------------------------
-Ptr<CSprite>
-CSprite::VirtualConstruct(
-        CSpriteParms const &spriteparms) {
+Ptr<CSprite> CSprite::VirtualConstruct( CSpriteParms const &spriteparms ) {
     Ptr<CSprite> ptrsprite;
 
     switch (spriteparms.m_iType) {
@@ -1496,9 +1487,7 @@ CSprite::VirtualConstruct(
 //---------------------------------------------------------------------------
 // CSprite::CSprite
 //---------------------------------------------------------------------------
-CSprite::CSprite(
-        CSpriteParms const &spriteparms)
-        :
+CSprite::CSprite( CSpriteParms const &spriteparms):
         m_piViewOffsets(NULL),
         m_piViewIndices(NULL),
         m_iBitsPerPixel(spriteparms.m_iBitsPerPixel),
@@ -1643,8 +1632,7 @@ CSprite::CSprite(
 //-------------------------------------------------------------------------
 // CSprite::PostConstruct
 //-------------------------------------------------------------------------
-void
-CSprite::PostConstruct() {
+void CSprite::PostConstruct() {
     for (int i = 0; i < GetNumViews(); ++i) {
         CSpriteView *pspriteview = GetSpriteView(i);
 
@@ -1655,9 +1643,7 @@ CSprite::PostConstruct() {
 //-------------------------------------------------------------------------
 // CSprite::AddHotSpotKey
 //-------------------------------------------------------------------------
-void
-CSprite::AddHotSpotKey(
-        CHotSpotKey const &hotspotkey) {
+void CSprite::AddHotSpotKey( CHotSpotKey const &hotspotkey ) {
     int n = hotspotkey.m_iIndex + 1;
 
     if (n > m_anHotSpots[hotspotkey.m_eType])
@@ -1667,10 +1653,8 @@ CSprite::AddHotSpotKey(
 //---------------------------------------------------------------------------
 // CTerrainSprite::CTerrainSprite
 //---------------------------------------------------------------------------
-CTerrainSprite::CTerrainSprite(
-        CSpriteParms const &spriteparms)
-        :
-        CSprite(spriteparms) {
+CTerrainSprite::CTerrainSprite( CSpriteParms const &spriteparms ):
+        CSprite( spriteparms ) {
 
     theApp.BaseYield();
 
@@ -1727,13 +1711,8 @@ CTerrainSprite::CTerrainSprite(
 //---------------------------------------------------------------------------
 // CTerrainSprite::CTerrainSprite
 //---------------------------------------------------------------------------
-CTerrainSprite::CTerrainSprite(
-        CTerrainSprite const &terrainsprite,
-        int iID,
-        int iIndex,
-        int iRotRight)
-        :
-        CSprite(terrainsprite) {
+CTerrainSprite::CTerrainSprite( CTerrainSprite const &terrainsprite, int iID, int iIndex, int iRotRight):
+        CSprite( terrainsprite ) {
     ASSERT(0 <= iRotRight && iRotRight < NUM_TERRAIN_DIRECTIONS);
 
     SetID(iID);
@@ -1752,10 +1731,8 @@ CTerrainSprite::CTerrainSprite(
 //---------------------------------------------------------------------------
 // CStructureSprite::CStructureSprite
 //---------------------------------------------------------------------------
-CStructureSprite::CStructureSprite(
-        CSpriteParms const &spriteparms)
-        :
-        CSprite(spriteparms) {
+CStructureSprite::CStructureSprite( CSpriteParms const &spriteparms ):
+        CSprite( spriteparms ) {
 
     theApp.BaseYield();
 
@@ -1912,13 +1889,8 @@ CStructureSprite::CStructureSprite(
 //---------------------------------------------------------------------------
 // CStructureSprite::CStructureSprite
 //---------------------------------------------------------------------------
-CStructureSprite::CStructureSprite(
-        CStructureSprite const &structuresprite,
-        int iID,
-        int iIndex,
-        int iRotRight)
-        :
-        CSprite(structuresprite) {
+CStructureSprite::CStructureSprite( CStructureSprite const &structuresprite, int iID, int iIndex, int iRotRight):
+        CSprite( structuresprite ) {
     ASSERT(0 <= iRotRight && iRotRight < NUM_BLDG_DIRECTIONS);
 
     theApp.BaseYield();
@@ -1941,10 +1913,8 @@ CStructureSprite::CStructureSprite(
 //---------------------------------------------------------------------------
 // CEffectSprite::CEffectSprite
 //---------------------------------------------------------------------------
-CEffectSprite::CEffectSprite(
-        CSpriteParms const &spriteparms)
-        :
-        CSprite(spriteparms) {
+CEffectSprite::CEffectSprite( CSpriteParms const &spriteparms ):
+        CSprite( spriteparms ) {
     theApp.BaseYield();
 
     memset(m_apspriteview, 0, sizeof(m_apspriteview));
@@ -1996,10 +1966,8 @@ CEffectSprite::CEffectSprite(
 //---------------------------------------------------------------------------
 // CVehicleSprite::CVehicleSprite
 //---------------------------------------------------------------------------
-CVehicleSprite::CVehicleSprite(
-        CSpriteParms const &spriteparms)
-        :
-        CSprite(spriteparms) {
+CVehicleSprite::CVehicleSprite( CSpriteParms const &spriteparms ):
+        CSprite( spriteparms ) {
     theApp.BaseYield();
 
     memset(m_aaapspriteview, 0, sizeof(m_aaapspriteview));
@@ -2087,18 +2055,15 @@ CVehicleSprite::CVehicleSprite(
 //---------------------------------------------------------------------------
 // CSpriteCollection::ReadThreadFunc
 //---------------------------------------------------------------------------
-UINT
-CSpriteCollection::ReadThreadFunc(
-        void *pvParam) {
+// FIXME: allocating/Creating CSpriteParams fails here
+UINT CSpriteCollection::ReadThreadFunc( void *pvParam ) {
     CThreadParms *pparms = (CThreadParms *) pvParam;
     BOOL bTerminate = FALSE;
 
     try {
         for (int i = 0; !bTerminate && i < pparms->m_nSprites; ++i) {
-            Ptr<CSpriteParms> ptrspriteparms = new CSpriteParms(pparms->m_pmmio,
-                                                                pparms->m_uTime,
-                                                                pparms->m_iTypeOverride,
-                                                                pparms->m_iBitsPerPixel);
+            Ptr<CSpriteParms> ptrspriteparms = new CSpriteParms(pparms->m_pmmio, pparms->m_uTime,
+                                                                pparms->m_iTypeOverride, pparms->m_iBitsPerPixel );
             g_cs.Lock();
 
             try {
@@ -2132,15 +2097,8 @@ CSpriteCollection::ReadThreadFunc(
 //---------------------------------------------------------------------------
 // CSpriteCollection::Read
 //---------------------------------------------------------------------------
-BOOL
-CSpriteCollection::Read(
-        CMmio &mmio,
-        unsigned uTime,
-        int iPerStart,
-        int iPerRange,
-        int iBitsPerPixel,
-        int iTypeOverride)    // type override
-{
+BOOL CSpriteCollection::Read( CMmio &mmio, unsigned int uTime, int iPerStart, int iPerRange, int iBitsPerPixel,
+                              int iTypeOverride ) {
     if (iPerStart >= 0)
         theApp.m_pCreateGame->GetDlgStatus()->SetPer(iPerStart);
 
@@ -2295,7 +2253,7 @@ CSpriteCollection::Read(
         iPrevID = m_pptrsprite[0]->GetID();
 
     int i = 0;
-    for ( ; i < m_nSprite; ++i) {
+    for (; i < m_nSprite; ++i) {
         ASSERT(0 <= m_pptrsprite[i]->GetID());
 
         int iID = m_pptrsprite[i]->GetID();

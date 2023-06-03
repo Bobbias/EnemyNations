@@ -643,7 +643,7 @@ void CWndMain::OnActivateApp(BOOL bActive, DWORD hTask)
 		{
 		if ( theGame.HaveHP () )
 			{
-			if ( ( theGame.DoOper () ) && theApp.m_bPauseOnAct )
+			if ((theGame.ShouldOperate() ) && theApp.m_bPauseOnAct )
 				{
 				m_bPauseOnActive = TRUE;
 				_OnPause ( TRUE );
@@ -1329,7 +1329,7 @@ void CWndMain::OnPause ()
 	if ((! theGame.AmServer ()) || (theGame.GetState () != CGame::play))
 		return;
 
-	BOOL bPause = theGame.DoOper ();
+	BOOL bPause = theGame.ShouldOperate();
 
 	_EnableGameWindows ( ! bPause );
 
@@ -1346,19 +1346,19 @@ void CWndMain::_OnPause (BOOL bPause)
 		return;
 
 	// may already be set
-	if ( bPause == ! theGame.DoOper () )
+	if ( bPause == !theGame.ShouldOperate() )
 		return;
 
 	// pause
 	if ( bPause )
 		{
-		theGame.SetOper (FALSE);
+            theGame.SetShouldOperate(FALSE);
 		CNetCmd msg (CNetCmd::cmd_pause);
 		theGame.PostToAllClients (&msg, sizeof (msg));
 		}
 	else
 		{
-		theGame.SetOper (TRUE);
+            theGame.SetShouldOperate(TRUE);
 		CNetCmd msg (CNetCmd::cmd_resume);
 		theGame.PostToAllClients (&msg, sizeof (msg));
 		}
@@ -1506,8 +1506,8 @@ void CWndMain::OnTimer(UINT nIDEvent)
 					pPlr->m_bPauseMsgs = FALSE;
 					}
 				}
-			theGame.PauseTimerFired ();
-			theGame.SetMsgsPaused ( FALSE );
+              theGame.ResetPauseTimer();
+              theGame.SetMessagesPaused(FALSE);
 
 			if ( theApp.m_pLogFile != NULL )
 				{

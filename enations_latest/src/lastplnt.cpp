@@ -119,9 +119,9 @@ void CatchNum( int iNum )
     bDoSubclass = FALSE;
 
     // turn the game off
-    theGame.SetAnim( FALSE );
-    theGame.SetOper( FALSE );
-    theGame.SetMsgs( FALSE );
+    theGame.SetShouldAnimate(FALSE);
+    theGame.SetShouldOperate(FALSE);
+    theGame.SetShouldProcessMessages(FALSE);
     theGame.EmptyQueue( );
 
     // no message if quitting
@@ -148,9 +148,9 @@ void CatchSE( SE_Exception e )
     bDoSubclass = FALSE;
 
     // turn the game off
-    theGame.SetAnim( FALSE );
-    theGame.SetOper( FALSE );
-    theGame.SetMsgs( FALSE );
+    theGame.SetShouldAnimate(FALSE);
+    theGame.SetShouldOperate(FALSE);
+    theGame.SetShouldProcessMessages(FALSE);
     theGame.EmptyQueue( );
 
     CDlgStackDump dlg;
@@ -209,9 +209,9 @@ void CatchOther( )
     bDoSubclass = FALSE;
 
     // turn the game off
-    theGame.SetAnim( FALSE );
-    theGame.SetOper( FALSE );
-    theGame.SetMsgs( FALSE );
+    theGame.SetShouldAnimate(FALSE);
+    theGame.SetShouldOperate(FALSE);
+    theGame.SetShouldProcessMessages(FALSE);
     theGame.EmptyQueue( );
 
     CString sMsg;
@@ -1676,7 +1676,7 @@ void CConquerApp::CreateMain( )
         m_wndMovie.DestroyWindow( );
 
     // if coming from a game setup - kill it
-    theGame.SetMsgs( FALSE );
+    theGame.SetShouldProcessMessages(FALSE);
     DestroyExceptMain( );
 
     m_wndMain.SetProgPos( CWndMain::playing );
