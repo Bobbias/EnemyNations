@@ -352,31 +352,24 @@ void CConquerApp::ProcessAllMessages( )
     // process all messages so we have none pending
     while ( TRUE )
     {
-        OutputDebugString("CConquerApp::ProcessAllMessages: Infinite loop start\n");
         EnterCriticalSection( &cs );
         if (theGame.m_messagePointerList.GetCount( ) <= 0 )
         {
-            OutputDebugString("CConquerApp::ProcessAllMessages: no messages to process\n");
             LeaveCriticalSection( &cs );
             break;
         }
-        OutputDebugString("CConquerApp::ProcessAllMessages: extracting next message\n");
         char* pBuf = (char*)theGame.m_messagePointerList.RemoveHead( );
         if ( pBuf == NULL )
         {
-            OutputDebugString("CConquerApp::ProcessAllMessages: next message was null\n");
             LeaveCriticalSection( &cs );
             break;
         }
-        OutputDebugString("CConquerApp::ProcessAllMessages: before ProcessMessage\n");
         theGame.ProcessMessage((CNetCmd *) pBuf);
         theGame.FreeQueueElement((CNetCmd *) pBuf);
-        OutputDebugString("CConquerApp::ProcessAllMessages: after ProcessMessage and FreeQueueElement\n");
 
         // throttle messages back on if a net game
         if ( ( theGame.IsNetGame( ) ) && ( theGame.ShouldPause() ) ) {
             if (theGame.m_messagePointerList.GetCount( ) <= MIN_NUM_MESSAGES ) {
-                OutputDebugString("CConquerApp::ProcessAllMessages: minimum net messages reaches, unpausing other players\n");
                 theGame.ClearShouldPause();
 
                 LeaveCriticalSection( &cs );
@@ -391,11 +384,9 @@ void CConquerApp::ProcessAllMessages( )
             }
         }
 
-        OutputDebugString("CConquerApp::ProcessAllMessages: before final LeaveCriticalSection\n");
         LeaveCriticalSection( &cs );
 
         // see if we need to render
-        OutputDebugString("CConquerApp::ProcessAllMessages: before CheckYield\n");
         if ( CheckYield( ) )
             if ( !theGame.ShouldProcessMessages() )
                 return;
