@@ -794,8 +794,8 @@ void CDlgCreateStatus::SetPer(int iPer, BOOL bYield) {
         return;
 
     // tell everyone our new status
-    if (theGame.HaveHP()) {
-        CNetPlyrStatus msg(theGame.GetMe()->GetNetNum(), iPer);
+    if (theGame.IsNetGame() && theGame.HaveHP()) {
+        auto msg = CNetPlyrStatus(theGame.GetMe()->GetNetNum(), iPer);
         theGame.PostToAll(&msg, sizeof(msg), FALSE);
     }
 
