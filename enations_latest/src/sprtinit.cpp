@@ -1399,7 +1399,8 @@ CSpriteParms::CSpriteParms(CMmio *pmmio, unsigned int uTime, int iTypeOverride, 
     long lHdrLen = pmmio->ReadLong();
 
 //BUGBUG	m_ptrspritehdr = ( CSpriteHdr * )( new BYTE [ lHdrLen ] );
-    m_ptrspritehdr = new CSpriteHdr();
+//    m_ptrspritehdr = new CSpriteHdr();
+    m_ptrspritehdr = (CSpriteHdr *) (new BYTE[lHdrLen]); // Allocate the full size.
     if (m_ptrspritehdr.Value() == NULL) {
         AfxMessageBox(IDS_NO_MEMORY, MB_OK);
         ThrowError(ERR_OUT_OF_MEMORY);
