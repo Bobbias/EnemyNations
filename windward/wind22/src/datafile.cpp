@@ -226,13 +226,10 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
     else
         path = file + "\\" + file + ".rif";
     path.MakeLower();
-    OutputDebugString("CDataFile::OpenAsMMIO: path = " + path);
 
     //  Check to see if the file exists in the patch directory.
     if (m_pPatchDir) {
         CString patchPath = *m_pPatchDir + "\\" + path;
-        OutputDebugString(
-                "CDataFile::OpenAsMMIO: checking to see if file exists in patch directory. patchPath = " + patchPath);
 
         CFile test;
         if (test.Open(patchPath, CFile::modeRead | CFile::shareDenyWrite | CFile::typeBinary) != FALSE) {
@@ -245,7 +242,6 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
                 ThrowError(ERR_OUT_OF_MEMORY);
 
             // does the version match?
-            OutputDebugString("CDataFile::OpenAsMMIO: check version");
             try {
                 pNewFile->DescendRiff(pRif);
                 pNewFile->DescendList('F', 'V', 'E', 'R');
@@ -265,20 +261,17 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
             }
 
             catch (...) {
-                OutputDebugString("CDataFile::OpenAsMMIO: check version fail");
+                OutputDebugString("CDataFile::OpenAsMMIO: check version fail\n");
             }
 
             delete pNewFile;
         }
-        OutputDebugString("CDataFile::OpenAsMMIO: not found in patch directory, trying user version next");
 
         // we now look in the patch dir (users version)
         if (pFilename == NULL)
             patchPath.Format("%s\\%d.rif", (char const *) (*m_pPatchDir), m_countryCode);
         else
             patchPath = *m_pPatchDir + CString("\\") + file + ".rif";
-
-        OutputDebugString("CDataFile::OpenAsMMIO: patchPath " + patchPath);
 
         if (test.Open(patchPath, CFile::modeRead | CFile::shareDenyWrite | CFile::typeBinary) != FALSE) {
             //  Close the file so we can re-open it as an mmio file.
@@ -309,7 +302,7 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
             }
 
             catch (...) {
-                OutputDebugString("CDataFile::OpenAsMMIO: check version fail");
+                OutputDebugString("CDataFile::OpenAsMMIO: check version fail\n");
             }
 
             delete pNewFile;
@@ -320,25 +313,19 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
     //  patch directory or there is no patch directory.
     //  If a datafile was opened, look for it in the
     //  datafile.
-    OutputDebugString("CDataFile::OpenAsMMIO: File does not exist in patch dir");
-    OutputDebugString("CDataFile::OpenAsMMIO: checking datafile");
     if (m_pDataFile) {
         //  Look for the file path in the map.  If 
         //  it is not found, if searching for language 
         //  file try searching for US version;  otherwise,
         //  return NULL.
-        auto path_string = CString();
-        path_string.Format("CDataFile::OpenAsMMIO: search file map for %s", (LPCSTR)path);
-        OutputDebugString(path_string);
         void *dummy;
         if (m_pFileMap->Lookup(path, dummy) == FALSE) {
             if (pFilename == NULL && m_countryCode != DEF_COUNTRY_CODE) {
                 m_countryCode = DEF_COUNTRY_CODE;
-                OutputDebugString("CDataFile::OpenAsMMIO: opening country code file via file map");
                 return OpenAsMMIO(NULL, pRif);
             }
-            OutputDebugString("CDataFile::OpenAsMMIO: country code not found via file map");
-            OutputDebugString("CDataFile::OpenAsMMIO: returning ERR_DATAFILE_NO_ENTRY");
+            OutputDebugString("CDataFile::OpenAsMMIO: country code not found via file map\n");
+            OutputDebugString("CDataFile::OpenAsMMIO: returning ERR_DATAFILE_NO_ENTRY\n");
             ThrowError(ERR_DATAFILE_NO_ENTRY);
         }
 
@@ -347,10 +334,6 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
         //  If negative seek checks between CMmio's are 
         //  desired, they should be done here.
         long fileOffset = (long) dummy;
-        auto out_str = CString();
-        out_str.Format("CDataFile::OpenAsMMIO: fileOffset: %i, m_pDataFile->GetPosition(): %lld", fileOffset,
-                       m_pDataFile->GetPosition());
-        OutputDebugString(out_str);
         long offsetFromHere = fileOffset - (long) m_pDataFile->GetPosition();
 
 #ifdef _DEBUG
@@ -368,12 +351,9 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
         //  at the current file offset.
         // BUGBUG - problem
         CMmio *pNewFile = new CMmioEmbeddedFile(m_pDataFile->m_hFile, m_sFileName, lastPos);
-        out_str.Format("CDataFile::OpenAsMMIO: file found. Returning CMmioEmbeddedFile for %s at offset %lld",
-                   (LPCSTR)m_sFileName, lastPos);
-        OutputDebugString(out_str);
         if (pNewFile == NULL) {
             OutputDebugString(
-                    "CDataFile::OpenAsMMIO: failed to allocate CMmioEmbeddedFile, returning ERR_OUT_OF_MEMORY");
+                    "CDataFile::OpenAsMMIO: failed to allocate CMmioEmbeddedFile, returning ERR_OUT_OF_MEMORY\n");
             ThrowError(ERR_OUT_OF_MEMORY);
         }
 
@@ -383,7 +363,7 @@ CMmio *CDataFile::OpenAsMMIO(const char *pFilename, const char *pRif) {
     //  If here, file was not found in patch dir ( or
     //  no patch dir was given ), and no datafile was
     //  opened, so return NULL ( no file found ).
-    OutputDebugString("CDataFile::OpenAsMMIO: file not found, about to throw ERR_DATAFILE_NO_ENTRY");
+    OutputDebugString("CDataFile::OpenAsMMIO: file not found, about to throw ERR_DATAFILE_NO_ENTRY\n");
     ThrowError(ERR_DATAFILE_NO_ENTRY);
     return NULL;
 }
