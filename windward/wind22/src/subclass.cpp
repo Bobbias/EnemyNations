@@ -1211,7 +1211,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
     CGlobalSubClassButton *psubclassbutton = g_ptrsubclassbutton.Value();
 
     if (!psubclassbutton) {
-        OutputDebugString("CGlobalSubClassButton::WindowProc: no psubclassbutton, early return");
+        OutputDebugString("CGlobalSubClassButton::WindowProc: no psubclassbutton, early return\n");
         return 0;
     }
 
@@ -1230,8 +1230,8 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
 
     switch (Message) {
         case WM_CREATE: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_CREATE");
-            auto pcreatestruct = reinterpret_cast<CREATESTRUCT*>( lParam );
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_CREATE\n");
+            auto pcreatestruct = (CREATESTRUCT*)lParam;
 
             LONG lStyle = pcreatestruct->style;
 
@@ -1242,6 +1242,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
                 case BS_PUSHBUTTON:
                 case BS_DEFPUSHBUTTON:
 
+                    OutputDebugString("CGlobalSubClassButton::WindowProc: WM_CREATE: before setButtonStyle\n");
                     pbtn->SetButtonStyle(BS_OWNERDRAW, FALSE);
 
                     break;
@@ -1251,7 +1252,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
         }
 
         case WM_PAINT: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_PAINT");
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_PAINT\n");
             DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
 
             switch (dwStyle & 0x00ff) {
@@ -1285,7 +1286,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
         }
 
         case BM_SETCHECK: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle BM_SETCHECK");
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle BM_SETCHECK\n");
             LRESULT lResult = psubclassbutton->Default(hWnd, Message, wParam, lParam);
 
             ::InvalidateRect(hWnd, NULL, FALSE);
@@ -1295,12 +1296,12 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
         }
 
         case WM_ERASEBKGND: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_ERASEBKGND");
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_ERASEBKGND\n");
             return TRUE;
         }
 
         case WM_NCDESTROY: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_NCDESTROY");
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_NCDESTROY\n");
             CString *pstr = (CString *) ::RemoveProp(hWnd, GetTextPropName());
             HFONT hfont = (HFONT) ::RemoveProp(hWnd, GetFontPropName());
 
@@ -1320,7 +1321,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
 
         case WM_LBUTTONDOWN:
         case WM_LBUTTONDBLCLK: {
-            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_LBUTTONDOWN/WM_LBUTTONDBLCLK");
+            OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_LBUTTONDOWN/WM_LBUTTONDBLCLK\n");
             DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE) & 0x00ff;
 
             switch (dwStyle) {
@@ -1356,11 +1357,11 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
     DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE) & 0x00ff;
 
     if (BS_GROUPBOX == dwStyle)
-        OutputDebugString("CGlobalSubClassButton::WindowProc: handle BS_GROUPBOX");
+        OutputDebugString("CGlobalSubClassButton::WindowProc: handle BS_GROUPBOX\n");
         switch (Message) {
             case WM_GETTEXTLENGTH: {
-                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETTEXTLENGTH");
-                CString *pstr = (CString *) ::GetProp(hWnd, GetTextPropName());
+                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETTEXTLENGTH\n");
+                auto pstr = (CString *) ::GetProp(hWnd, GetTextPropName());
 
                 if (pstr)
                     return pstr->GetLength();
@@ -1369,8 +1370,8 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
             }
 
             case WM_GETTEXT: {
-                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETTEXT");
-                CString *pstr = reinterpret_cast<CString *>( ::GetProp(hWnd, GetTextPropName()));
+                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETTEXT\n");
+                auto pstr = (CString*) ::GetProp(hWnd, GetTextPropName());
 
                 if (!pstr) {
                     LONG lResult = psubclassbutton->Default(hWnd, Message, wParam, lParam);
@@ -1391,7 +1392,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
             }
 
             case WM_SETTEXT: {
-                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_SETTEXT");
+                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_SETTEXT\n");
                 CString *pstr = (CString *) ::GetProp(hWnd, GetTextPropName());
 
                 if (!pstr) {
@@ -1408,7 +1409,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
             }
 
             case WM_SETFONT: {
-                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_SETFONT");
+                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_SETFONT\n");
                 HFONT hfont = (HFONT) wParam;
 
                 ::SetProp(hWnd, GetFontPropName(), hfont);
@@ -1420,7 +1421,7 @@ LONG FAR PASCAL CGlobalSubClassButton::WindowProc( HWND hWnd, UINT Message, WPAR
             }
 
             case WM_GETFONT: {
-                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETFONT");
+                OutputDebugString("CGlobalSubClassButton::WindowProc: handle WM_GETFONT\n");
                 HFONT hfont = (HFONT) ::GetProp(hWnd, GetFontPropName());
 
                 return (LONG) hfont;
