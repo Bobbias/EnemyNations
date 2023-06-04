@@ -86,8 +86,8 @@ class CRawChannel
     void*     m_pDblBuf[3];  // double buffer for music
 
     CRITICAL_SECTION m_cs;
-    BOOL             m_bCritSec;  // critical section created
-    CWinThread*      m_pThrd;     // double buffering read-ahead thread
+    BOOL             m_bCriticalSectionCreated;  // critical section created
+    CWinThread*      m_pThread;     // double buffering read-ahead thread
     DWORD            m_iReadLen;  // how much the read ahead got (end of file)
     enum STAT
     {

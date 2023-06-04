@@ -38,7 +38,7 @@ UINT fnMusicReadAhead( LPVOID pParam ) {
         // read into the buffer
         while ( TRUE ) {
             // wait for next request
-            pRawChn->m_pThrd->SuspendThread();
+            pRawChn->m_pThread->SuspendThread();
 
             if ( !pRawChn->m_bRunning )
                 break;
@@ -66,21 +66,21 @@ UINT fnMusicReadAhead( LPVOID pParam ) {
     }
 
     catch ( ... ) {
-        if ( pRawChn->m_bCritSec )
+        if ( pRawChn->m_bCriticalSectionCreated )
             EnterCriticalSection( &( pRawChn->m_cs ) );
         pRawChn->m_cStat = CRawChannel::_unused;
-        pRawChn->m_pThrd->m_hThread = NULL;
-        pRawChn->m_pThrd = NULL;
-        if ( pRawChn->m_bCritSec )
+        pRawChn->m_pThread->m_hThread = NULL;
+        pRawChn->m_pThread = NULL;
+        if ( pRawChn->m_bCriticalSectionCreated )
             LeaveCriticalSection( &( pRawChn->m_cs ) );
         return ( 0 );
     }
 
-    if ( pRawChn->m_bCritSec )
+    if ( pRawChn->m_bCriticalSectionCreated )
         EnterCriticalSection( &( pRawChn->m_cs ) );
     pRawChn->m_cStat = CRawChannel::_unused;
-    pRawChn->m_pThrd->m_hThread = NULL;
-    if ( pRawChn->m_bCritSec )
+    pRawChn->m_pThread->m_hThread = NULL;
+    if ( pRawChn->m_bCriticalSectionCreated )
         LeaveCriticalSection( &( pRawChn->m_cs ) );
 
     return ( 0 );
@@ -113,7 +113,7 @@ void CRawChannel::BackgroundRead( HANDLE iHdl, int iOff, int iLen ) {
         m_iBufOn = 0;
 
     // start it
-    m_pThrd->ResumeThread();
+    m_pThread->ResumeThread();
 }
 
 CRawChannel::CRawChannel() {
@@ -128,12 +128,12 @@ CRawChannel::CRawChannel() {
     m_iPan = 64;
     m_pData = NULL;
     m_pDblBuf[0] = m_pDblBuf[1] = m_pDblBuf[2] = NULL;
-    m_pThrd = NULL;
+    m_pThread = NULL;
     m_cStat = _unused;
     m_iBufOn = 0;
 
     memset( &m_cs, 0, sizeof( m_cs ) );
-    m_bCritSec = FALSE;
+    m_bCriticalSectionCreated = FALSE;
 }
 
 void CRawChannel::Close() {
@@ -162,11 +162,11 @@ BOOL CRawChannel::AllocDblBuf() {
 
             memset( &m_cs, 0, sizeof( m_cs ) );
             InitializeCriticalSection( &m_cs );
-            m_bCritSec = TRUE;
+            m_bCriticalSectionCreated = TRUE;
 
-            m_pThrd = AfxBeginThread( fnMusicReadAhead, this, THREAD_PRIORITY_HIGHEST,
-                                      0, CREATE_SUSPENDED );
-            m_pThrd->ResumeThread();
+            m_pThread = AfxBeginThread( fnMusicReadAhead, this, THREAD_PRIORITY_HIGHEST,
+                                        0, CREATE_SUSPENDED );
+            m_pThread->ResumeThread();
         }
 
     return ( TRUE );
@@ -178,24 +178,24 @@ void CRawChannel::FreeDblBuf() {
     AIL_serve();
     AIL_serve();
 
-    if ( ( m_pThrd != NULL ) && m_bCritSec ) {
+    if ( ( m_pThread != NULL ) && m_bCriticalSectionCreated ) {
         EnterCriticalSection( &m_cs );
-        if ( ( m_pThrd != NULL ) && AfxIsValidAddress( m_pThrd, sizeof( CWinThread ) ) ) {
+        if ( ( m_pThread != NULL ) && AfxIsValidAddress( m_pThread, sizeof( CWinThread ) ) ) {
             m_bRunning = FALSE;
-            m_pThrd->ResumeThread();
-            for ( int iWait = 0; ( m_pThrd->m_hThread != NULL ) && ( iWait < 10 ); iWait++ ) {
+            m_pThread->ResumeThread();
+            for (int iWait = 0; ( m_pThread->m_hThread != NULL ) && (iWait < 10 ); iWait++ ) {
                 LeaveCriticalSection( &m_cs );
                 ::Sleep( iWait * 8 );
                 EnterCriticalSection( &m_cs );
-                if ( !AfxIsValidAddress( m_pThrd, sizeof( CWinThread ) ) )
+                if ( !AfxIsValidAddress( m_pThread, sizeof( CWinThread ) ) )
                     break;
             }
 
-            if ( AfxIsValidAddress( m_pThrd, sizeof( CWinThread ) ) )
-                if ( m_pThrd->m_hThread != NULL )
-                    TerminateThread( m_pThrd->m_hThread, 1 );
+            if ( AfxIsValidAddress(m_pThread, sizeof( CWinThread ) ) )
+                if (m_pThread->m_hThread != NULL )
+                    TerminateThread(m_pThread->m_hThread, 1 );
         }
-        m_pThrd = NULL;
+        m_pThread = NULL;
         LeaveCriticalSection( &m_cs );
     }
 
@@ -205,9 +205,9 @@ void CRawChannel::FreeDblBuf() {
             m_pDblBuf[iInd] = NULL;
         }
 
-    if ( m_bCritSec ) {
+    if ( m_bCriticalSectionCreated ) {
         DeleteCriticalSection( &m_cs );
-        m_bCritSec = FALSE;
+        m_bCriticalSectionCreated = FALSE;
     }
 }
 
@@ -453,7 +453,7 @@ void CRawData::StartDblBuffer( CRawChannel* pRaw ) {
             iDecLen = iLen;
 
         // start background thread on next buffer
-        if ( pRaw->m_pThrd != nullptr ) {
+        if (pRaw->m_pThread != nullptr ) {
             int iLen = DBL_BUF_LEN / 4 - pRaw->m_pPar->m_iInBuf;
             iLen = __min( iLen, m_iDataLen - m_lBufOff );
             pRaw->m_iBufOn = 0;
@@ -483,14 +483,14 @@ void CRawData::LoadNextDblBuffer( CRawChannel* pRaw, int iNeed ) {
         }
 
         // have a background thread - it's read it
-        if ( pRaw->m_pThrd != NULL ) {
+        if (pRaw->m_pThread != NULL ) {
             int iDelay = 10;
             while ( pRaw->m_cStat == CRawChannel::_reading ) {
                 ::Sleep( iDelay );
                 iDelay += iDelay / 2;
 
                 // if it died go to the catch below
-                if ( pRaw->m_pThrd == NULL ) {
+                if (pRaw->m_pThread == NULL ) {
                     TRAP();
                     ThrowError( ERR_CACHE_READ );
                 }
