@@ -4536,18 +4536,20 @@ void CWndArea::UpdateSound( )
 
         // ok, play them if loud enough
         // BUGBUG - do we need to pan?
-        int iTreeVol = ( iTrees * 100 ) / iTotal;
-        if ( iTreeVol > 20 )
-            theMusicPlayer.QueueBackgroundSound( SOUNDS::trees, SFXPRIORITY::terrain_pri, 64, iTreeVol );
-        int iSwampVol = ( iSwamp * 100 ) / iTotal;
-        if ( iSwampVol > 20 )
-            theMusicPlayer.QueueBackgroundSound( SOUNDS::swamp, SFXPRIORITY::terrain_pri, 64, iSwampVol );
-        int iRiverVol = ( iRiver * 100 ) / iTotal;
-        if ( iRiverVol > 20 )
-            theMusicPlayer.QueueBackgroundSound( SOUNDS::river, SFXPRIORITY::terrain_pri, 64, iRiverVol );
-        int iOceanVol = ( iOcean * 100 ) / iTotal;
-        if ( iOceanVol > 20 )
-            theMusicPlayer.QueueBackgroundSound( SOUNDS::ocean, SFXPRIORITY::terrain_pri, 64, iOceanVol );
+        if ( iTotal > 0 ) { // only run this calculation if iTotal isn't 0
+            int iTreeVol = (iTrees * 100) / iTotal;
+            if (iTreeVol > 20)
+                theMusicPlayer.QueueBackgroundSound(SOUNDS::trees, SFXPRIORITY::terrain_pri, 64, iTreeVol);
+            int iSwampVol = (iSwamp * 100) / iTotal;
+            if (iSwampVol > 20)
+                theMusicPlayer.QueueBackgroundSound(SOUNDS::swamp, SFXPRIORITY::terrain_pri, 64, iSwampVol);
+            int iRiverVol = (iRiver * 100) / iTotal;
+            if (iRiverVol > 20)
+                theMusicPlayer.QueueBackgroundSound(SOUNDS::river, SFXPRIORITY::terrain_pri, 64, iRiverVol);
+            int iOceanVol = (iOcean * 100) / iTotal;
+            if (iOceanVol > 20)
+                theMusicPlayer.QueueBackgroundSound(SOUNDS::ocean, SFXPRIORITY::terrain_pri, 64, iOceanVol);
+        }
     }
 
     // walk the buildings for construction, burning, selected
