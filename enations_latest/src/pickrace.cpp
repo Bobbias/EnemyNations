@@ -130,20 +130,20 @@ void CDlgPickRace::OnOK() {
         TRAP();
         return;
     }
-    CRaceDef *pRd = (CRaceDef *) m_lstRace.GetItemDataPtr(iSel);
-    ASSERT_VALID (pRd);
+    CRaceDef *pRaceDef = (CRaceDef *) m_lstRace.GetItemDataPtr(iSel);
+    ASSERT_VALID (pRaceDef);
 
     // save the parameters we use
     UpdateData(TRUE);
     m_pCb->m_sName = m_sName;
-    m_pCb->m_sRace = pRd->GetLine();
+    m_pCb->m_sRace = pRaceDef->GetLine();
 
     theApp.WriteProfileString("Create", "Name", m_sName);
 
     // copy the attributes
     theGame.GetMe()->SetName(m_sName);
-    theGame.GetMe()->m_InitData.Set(pRd, m_pCb->m_iPos);
-    m_pCb->GetNew()->m_InitData.Set(pRd, m_pCb->m_iPos);
+    theGame.GetMe()->m_InitData.Set(pRaceDef, m_pCb->m_iPos);
+    m_pCb->GetNew()->m_InitData.Set(pRaceDef, m_pCb->m_iPos);
 
     // if it's a scenario we play the cut scene here
     if (theGame.GetScenario() >= 0) {
