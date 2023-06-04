@@ -198,7 +198,7 @@ void CWndWorld::Create(BOOL bStart) {
     }
 
     // draw it
-    ReRender();
+    //ReRender(); // don't draw it?
 }
 
 BEGIN_MESSAGE_MAP(CWndWorld, CWndAnim)
@@ -1265,6 +1265,7 @@ void CWndWorld::ReRender() {
             CRect rect;
             GetClientRect(&rect);
             if ((pt.x < rect.right) && (pt.y < rect.bottom))
+                OutputDebugString("CWndWorld::ReRender: before SetMouseState\n");
                 SetMouseState();
         }
     }
@@ -1667,7 +1668,7 @@ void CWndWorld::SetMouseState() {
     }
 
     // get the cursor location
-    CPoint pt;
+    CPoint pt = CPoint();
     ::GetCursorPos(&pt);
     ScreenToClient(&pt);
 
@@ -1698,7 +1699,8 @@ void CWndWorld::SetMouseState() {
     int x = 64 * (pt.x - m_cx / 2) * theMap.Get_eX() / m_cx;
     int y = 64 * (pt.y - m_cy / 2) * theMap.Get_eY() / m_cy;
 
-    int X, Y;
+    int X = 0;
+    int Y = 0;
     CAnimAtr &aa = m_pWndArea->GetAA();
 
     switch (aa.m_iDir) {
@@ -1726,8 +1728,8 @@ void CWndWorld::SetMouseState() {
     Y += maplocCenter.y;
 
     // Convert to subhex
-
-    CSubHex _sub(CMapLoc(X, Y));
+    auto point = CMapLoc(X, Y);
+    CSubHex _sub( point );
     _sub.Wrap();
 
     // get building under

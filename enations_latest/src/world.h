@@ -110,16 +110,16 @@ protected:
 
 	int *					m_piRadarEdges;				// offset to left, right of radar opening
 
-	int						m_xBtnUL;							// button location
-	int						m_yBtnUL;
-	int						m_xBtnLR;
-	int						m_yBtnLR;
+	int						m_xBtnUL{};							// button location
+	int						m_yBtnUL{};
+	int						m_xBtnLR{};
+	int						m_yBtnLR{};
 
-	int						m_cx;									// size of bitmap & window
-	int						m_cy;
-	int						m_cxLine;							// cx extended up to dib pitch
-	long					m_lSizeBytes;
-	int						m_iMode;
+	int						m_cx{};									// size of bitmap & window
+	int						m_cy{};
+	int						m_cxLine{};							// cx extended up to dib pitch
+	long					m_lSizeBytes{};
+	int						m_iMode{};
 
 	int						m_yAdd;								// for map::window scaling
 	int						m_yRem;
@@ -128,7 +128,7 @@ protected:
 	int						m_xDib;								// for copying off-screen buffer to window
 	int						m_yDib;
 	int						m_xDibBytes;
-	int						m_iLenBytes;					// first half of line to copy
+	int						m_iLenBytes{};					// first half of line to copy
 
 	int						m_iResOn;							// for blinking resources
 	int						m_iFrameOn;
@@ -141,7 +141,7 @@ protected:
 	BOOL					m_bNewMode;				// TRUE if need to render for new mode
 	BOOL					m_bNewLocation;		// TRUE if need to render for new location
 	BOOL					m_bUpdate;				// TRUE if need to update
-	BOOL					m_bBldgHit;				// TRUE if need to render buildings again
+	BOOL					m_bBldgHit{};				// TRUE if need to render buildings again
 	BOOL					m_bIsRadar;				// TRUE if it's a radar unit
 
 	CPoint				m_ptRMB;
@@ -153,12 +153,12 @@ protected:
 	CString				m_sHelpFace;
 	CString				m_sDir [4];
 
-	HCURSOR				m_hCurArrow;	// standard cursor
-	HCURSOR				m_hCurCross;	// cross hairs
-	HCURSOR				m_hCurGoto;		// cursor to send vehicle
-	HCURSOR				m_hCurTarget;	// a targeting cursor
-	HCURSOR				m_hCurSelect;	// select a unit
-	HCURSOR				m_hCurMove;		// move the screen
+	HCURSOR				m_hCurArrow{};	// standard cursor
+	HCURSOR				m_hCurCross{};	// cross hairs
+	HCURSOR				m_hCurGoto{};		// cursor to send vehicle
+	HCURSOR				m_hCurTarget{};	// a targeting cursor
+	HCURSOR				m_hCurSelect{};	// select a unit
+	HCURSOR				m_hCurMove{};		// move the screen
 
 	// colors for painting the window
 	static DWORD		m_clrTerrain [CHex::num_types];		// same order as CHex m_bType
