@@ -105,7 +105,7 @@ public:
     }
 };
 
-const int SMALL_POOL_SIZE = (38 + 3) & ~3;
+const int SMALL_POOL_SIZE = (48 + 3) & ~3;
 // FIXME: This is supposed to be sizeof(CMsgBldgStat), but that class is not visible here for some reason.
 
 typedef memory_pool<mempool_std_heap<VP_MAXSENDDATA, 10>> mempool_large;
